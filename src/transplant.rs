@@ -1,9 +1,13 @@
 use unreal_asset::{
-    exports::{Export, ExportBaseTrait, ExportNormalTrait},
+    exports::*,
     properties::Property,
     types::{PackageIndex, PackageIndexTrait},
     Asset, Import,
 };
+
+mod fprop;
+mod kismet;
+mod uprop;
 
 pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::Read>(
     index: usize,
@@ -14,7 +18,7 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     // resolve all import references from exports
     let import_offset = recipient.imports.len() as i32;
     let mut imports = Vec::new();
-    for child in children.iter_mut() {
+    for child in &mut children {
         on_import_refs(child, |index| {
             if let Some(import) = donor.get_import(*index) {
                 index.index = match recipient.find_import_no_index(
@@ -119,7 +123,12 @@ fn get_actor_exports<C: std::io::Seek + std::io::Read>(
         .cloned()
         .collect();
     // add the top-level actor reference
-    child_indexes.insert(0, PackageIndex::new(index as i32 + 1));
+    if !child_indexes
+        .iter()
+        .any(|i| (i.index - 1) as usize == index)
+    {
+        child_indexes.insert(0, PackageIndex::new(index as i32 + 1))
+    }
 
     // get all the exports from those indexes
     let mut children: Vec<_> = child_indexes
@@ -146,7 +155,7 @@ fn get_actor_exports<C: std::io::Seek + std::io::Read>(
 /// on all possible export references
 fn on_export_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut PackageIndex)) {
     if let Some(norm) = export.get_normal_export_mut() {
-        for prop in norm.properties.iter_mut() {
+        for prop in &mut norm.properties {
             on_props(prop, &mut func);
         }
     }
@@ -166,11 +175,81 @@ fn on_export_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut P
     func(&mut export.outer_index);
 }
 
+fn on_norm(norm: &mut NormalExport<PackageIndex>, func: &mut impl FnMut(&mut PackageIndex)) {
+    for prop in &mut norm.properties {
+        on_props(prop, func);
+    }
+}
+
+fn on_struct(struc: &mut StructExport<PackageIndex>, mut func: &mut impl FnMut(&mut PackageIndex)) {
+    if let Some(next) = struc.field.next.as_mut() {
+        func(next)
+    }
+    func(&mut struc.super_struct);
+    struc.children.iter_mut().for_each(&mut func);
+    for prop in &mut struc.loaded_properties {
+        fprop::on_fprop(prop, &mut func)
+    }
+    if let Some(script) = struc.script_bytecode.as_mut() {
+        for inst in script {
+            kismet::on_kismet(inst, &mut func)
+        }
+    }
+    on_norm(&mut struc.normal_export, func)
+}
+
 /// on all of an export's possible references to imports
 fn on_import_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut PackageIndex)) {
-    if let Some(norm) = export.get_normal_export_mut() {
-        for prop in norm.properties.iter_mut() {
-            on_props(prop, &mut func);
+    match export {
+        Export::BaseExport(_) => (),
+        Export::ClassExport(class) => {
+            class.func_map.values_mut().for_each(&mut func);
+            func(&mut class.class_within);
+            for interface in &mut class.interfaces {
+                func(&mut interface.class)
+            }
+            func(&mut class.class_generated_by);
+            func(&mut class.class_default_object);
+            on_struct(&mut class.struct_export, &mut func);
+        }
+        Export::EnumExport(en) => on_norm(&mut en.normal_export, &mut func),
+        Export::LevelExport(lev) => {
+            lev.actors.iter_mut().for_each(&mut func);
+            func(&mut lev.model);
+            lev.model_components.iter_mut().for_each(&mut func);
+            func(&mut lev.level_script);
+            func(&mut lev.nav_list_start);
+            func(&mut lev.nav_list_end);
+            on_norm(&mut lev.normal_export, &mut func)
+        }
+        Export::NormalExport(norm) => on_norm(norm, &mut func),
+        Export::PropertyExport(prop) => {
+            uprop::on_uprop(&mut prop.property, &mut func);
+            on_norm(&mut prop.normal_export, &mut func);
+        }
+        Export::RawExport(_) => (),
+        Export::StringTableExport(str) => on_norm(&mut str.normal_export, &mut func),
+        Export::StructExport(struc) => on_struct(struc, &mut func),
+        Export::UserDefinedStructExport(uds) => {
+            for prop in &mut uds.default_struct_instance {
+                on_props(prop, &mut func)
+            }
+            on_struct(&mut uds.struct_export, &mut func)
+        }
+        Export::FunctionExport(fun) => on_struct(&mut fun.struct_export, &mut func),
+        Export::DataTableExport(data) => {
+            for data in &mut data.table.data {
+                for entry in &mut data.value {
+                    on_props(entry, &mut func);
+                }
+            }
+            on_norm(&mut data.normal_export, &mut func);
+        }
+        Export::WorldExport(world) => {
+            func(&mut world.persistent_level);
+            world.extra_objects.iter_mut().for_each(&mut func);
+            world.streaming_levels.iter_mut().for_each(&mut func);
+            on_norm(&mut world.normal_export, &mut func);
         }
     }
     let export = export.get_base_export_mut();
@@ -194,7 +273,7 @@ fn on_props(prop: &mut Property, func: &mut impl FnMut(&mut PackageIndex)) {
             func(&mut obj.value);
         }
         Property::ArrayProperty(arr) => {
-            for entry in arr.value.iter_mut() {
+            for entry in &mut arr.value {
                 on_props(entry, func);
             }
         }
@@ -204,31 +283,31 @@ fn on_props(prop: &mut Property, func: &mut impl FnMut(&mut PackageIndex)) {
             }
         }
         Property::SetProperty(set) => {
-            for entry in set.value.value.iter_mut() {
+            for entry in &mut set.value.value {
                 on_props(entry, func);
             }
-            for entry in set.removed_items.value.iter_mut() {
+            for entry in &mut set.removed_items.value {
                 on_props(entry, func);
             }
         }
         Property::DelegateProperty(del) => func(&mut del.value.object),
         Property::MulticastDelegateProperty(del) => {
-            for delegate in del.value.iter_mut() {
+            for delegate in &mut del.value {
                 func(&mut delegate.object)
             }
         }
         Property::MulticastSparseDelegateProperty(del) => {
-            for delegate in del.value.iter_mut() {
+            for delegate in &mut del.value {
                 func(&mut delegate.object)
             }
         }
         Property::MulticastInlineDelegateProperty(del) => {
-            for delegate in del.value.iter_mut() {
+            for delegate in &mut del.value {
                 func(&mut delegate.object)
             }
         }
         Property::StructProperty(struc) => {
-            for entry in struc.value.iter_mut() {
+            for entry in &mut struc.value {
                 on_props(entry, func);
             }
         }

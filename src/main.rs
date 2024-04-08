@@ -27,7 +27,7 @@ fn main() {
     let version = version.0;
     let hook = io::open(hook_path, version).unwrap();
     let mut orig = io::open(&orig_path, version).unwrap();
-    let mut name_map = orig.get_name_map();
+    let mut name_map = orig.get_name_map().clone_resource();
     // why does it need the import for cast?
     use unreal_asset::Export;
     let funcs: Vec<_> = hook
@@ -38,14 +38,13 @@ fn main() {
         .filter_map(|(i, ex)| {
             unreal_asset::cast!(Export, FunctionExport, ex)
                 .filter(|ex| {
-                    ex.get_base_export()
-                        .object_name
-                        .get_content(|name| !name.starts_with("orig_"))
+                    ex.get_base_export().object_name.get_content(|name| {
+                        !name.starts_with("orig_") && !name.starts_with("ExecuteUbergraph_")
+                    })
                 })
                 .map(|ex| (i, ex))
         })
         .collect();
-    // use index so i can push to exports
     for orig in orig
         .asset_data
         .exports

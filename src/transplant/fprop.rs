@@ -3,7 +3,6 @@ use FProperty as F;
 
 pub fn on_fprop(prop: &mut FProperty, func: &mut impl FnMut(&mut PackageIndex)) {
     match prop {
-        F::FGenericProperty(f) => (),
         F::FEnumProperty(f) => {
             func(&mut f.enum_value);
             on_fprop(&mut f.underlying_prop, func)
@@ -28,9 +27,8 @@ pub fn on_fprop(prop: &mut FProperty, func: &mut impl FnMut(&mut PackageIndex)) 
             on_fprop(&mut f.key_prop, func);
             on_fprop(&mut f.value_prop, func);
         }
-        F::FBoolProperty(f) => (),
         F::FByteProperty(f) => func(&mut f.enum_value),
         F::FStructProperty(f) => func(&mut f.struct_value),
-        F::FNumericProperty(f) => (),
+        _ => (),
     }
 }

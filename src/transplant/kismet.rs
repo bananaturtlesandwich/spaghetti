@@ -14,7 +14,6 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
         K::ExInstanceVariable(ex) => on_pointer(&mut ex.variable, func),
         K::ExDefaultVariable(ex) => on_pointer(&mut ex.variable, func),
         K::ExReturn(ex) => on_kismet(&mut ex.return_expression, func),
-        K::ExJump(_) => (),
         K::ExJumpIfNot(ex) => on_kismet(&mut ex.boolean_expression, func),
         K::ExAssert(ex) => on_kismet(&mut ex.assert_expression, func),
         K::ExNothing(_) => (),
@@ -36,9 +35,6 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
             on_kismet(&mut ex.variable_expression, func);
             on_kismet(&mut ex.assignment_expression, func);
         }
-        K::ExEndParmValue(_) => (),
-        K::ExEndFunctionParms(_) => (),
-        K::ExSelf(_) => (),
         K::ExSkip(ex) => on_kismet(&mut ex.skip_expression, func),
         K::ExContext(ex) => {
             on_kismet(&mut ex.object_expression, func);
@@ -61,23 +57,7 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
                 on_kismet(par, func)
             }
         }
-        K::ExIntConst(_) => (),
-        K::ExFloatConst(_) => (),
-        K::ExStringConst(_) => (),
         K::ExObjectConst(ex) => func(&mut ex.value),
-        K::ExNameConst(_) => (),
-        K::ExRotationConst(_) => (),
-        K::ExVectorConst(_) => (),
-        K::ExByteConst(_) => (),
-        K::ExIntZero(_) => (),
-        K::ExIntOne(_) => (),
-        K::ExTrue(_) => (),
-        K::ExFalse(_) => (),
-        K::ExTextConst(_) => (),
-        K::ExNoObject(_) => (),
-        K::ExTransformConst(_) => (),
-        K::ExIntConstByte(_) => (),
-        K::ExNoInterface(_) => (),
         K::ExDynamicCast(ex) => {
             func(&mut ex.class_ptr);
             on_kismet(&mut ex.target_expression, func);
@@ -88,7 +68,6 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
                 on_kismet(inst, func)
             }
         }
-        K::ExEndStructConst(_) => (),
         K::ExSetArray(ex) => {
             if let Some(ap) = ex.assigning_property.as_mut() {
                 on_kismet(ap, func)
@@ -100,12 +79,7 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
                 on_kismet(el, func)
             }
         }
-        K::ExEndArray(_) => (),
         K::ExPropertyConst(ex) => on_pointer(&mut ex.property, func),
-        K::ExUnicodeStringConst(_) => (),
-        K::ExInt64Const(_) => (),
-        K::ExUInt64Const(_) => (),
-        K::ExDoubleConst(_) => (),
         K::ExPrimitiveCast(ex) => on_kismet(&mut ex.target, func),
         K::ExSetSet(ex) => {
             on_kismet(&mut ex.set_property, func);
@@ -113,26 +87,22 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
                 on_kismet(el, func)
             }
         }
-        K::ExEndSet(_) => (),
         K::ExSetMap(ex) => {
             on_kismet(&mut ex.map_property, func);
             for el in &mut ex.elements {
                 on_kismet(el, func)
             }
         }
-        K::ExEndMap(_) => (),
         K::ExSetConst(ex) => {
             on_pointer(&mut ex.inner_property, func);
             for el in &mut ex.elements {
                 on_kismet(el, func)
             }
         }
-        K::ExEndSetConst(_) => (),
         K::ExMapConst(ex) => {
             on_pointer(&mut ex.key_property, func);
             on_pointer(&mut ex.value_property, func);
         }
-        K::ExEndMapConst(_) => (),
         K::ExStructMemberContext(ex) => {
             on_pointer(&mut ex.struct_member_expression, func);
             on_kismet(&mut ex.struct_expression, func);
@@ -157,19 +127,13 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
             }
         }
         K::ExLocalOutVariable(ex) => on_pointer(&mut ex.variable, func),
-        K::ExDeprecatedOp4A(_) => (),
-        K::ExInstanceDelegate(ex) => (),
-        K::ExPushExecutionFlow(ex) => (),
-        K::ExPopExecutionFlow(ex) => (),
         K::ExComputedJump(ex) => on_kismet(&mut ex.code_offset_expression, func),
         K::ExPopExecutionFlowIfNot(ex) => on_kismet(&mut ex.boolean_expression, func),
-        K::ExBreakpoint(ex) => (),
         K::ExInterfaceContext(ex) => on_kismet(&mut ex.interface_value, func),
         K::ExObjToInterfaceCast(ex) => {
             func(&mut ex.class_ptr);
             on_kismet(&mut ex.target, func);
         }
-        K::ExEndOfScript(ex) => (),
         K::ExCrossInterfaceCast(ex) => {
             func(&mut ex.class_ptr);
             on_kismet(&mut ex.target, func);
@@ -178,14 +142,11 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
             func(&mut ex.class_ptr);
             on_kismet(&mut ex.target, func);
         }
-        K::ExWireTracepoint(ex) => (),
-        K::ExSkipOffsetConst(ex) => (),
         K::ExAddMulticastDelegate(ex) => {
             on_kismet(&mut ex.delegate, func);
             on_kismet(&mut ex.delegate_to_add, func);
         }
         K::ExClearMulticastDelegate(ex) => on_kismet(&mut ex.delegate_to_clear, func),
-        K::ExTracepoint(ex) => (),
         K::ExLetObj(ex) => {
             on_kismet(&mut ex.variable_expression, func);
             on_kismet(&mut ex.assignment_expression, func);
@@ -219,7 +180,6 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
                 on_kismet(el, func)
             }
         }
-        K::ExEndArrayConst(ex) => (),
         K::ExSoftObjectConst(ex) => on_kismet(&mut ex.value, func),
         K::ExCallMath(ex) => {
             func(&mut ex.stack_node);
@@ -235,12 +195,12 @@ pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {
                 on_kismet(&mut case.case_term, func);
             }
         }
-        K::ExInstrumentationEvent(ex) => (),
         K::ExArrayGetByRef(ex) => {
             on_kismet(&mut ex.array_variable, func);
             on_kismet(&mut ex.array_index, func);
         }
         K::ExClassSparseDataVariable(ex) => on_pointer(&mut ex.variable, func),
         K::ExFieldPathConst(ex) => on_kismet(&mut ex.value, func),
+        _ => (),
     }
 }

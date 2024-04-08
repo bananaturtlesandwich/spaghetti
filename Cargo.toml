@@ -1,0 +1,16 @@
+[package]
+name = "kettle"
+authors = ["spuds"]
+repository = "https://github.com/bananaturtlesandwich/stove"
+description = "a kismet hooker for cooked unreal engine blueprints"
+readme = "README.md"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+unreal_asset = { git = "https://github.com/astrotechies/unrealmodding", rev = "84e60cc" }
+clap = { version = "4.5", features = ["derive"] }
+rfd = "0.14"
+
+[profile.dev.package."*"]
+opt-level = 3

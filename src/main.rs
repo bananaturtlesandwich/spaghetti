@@ -1,5 +1,8 @@
 use clap::Parser;
 
+mod io;
+mod transplant;
+
 #[derive(Parser)]
 #[command(about, long_about = None)]
 struct Cli {

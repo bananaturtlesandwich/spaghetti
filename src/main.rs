@@ -35,23 +35,32 @@ fn main() {
         .exports
         .iter()
         .enumerate()
-        .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
+        .filter_map(|(i, ex)| {
+            unreal_asset::cast!(Export, FunctionExport, ex)
+                .filter(|ex| {
+                    ex.get_base_export()
+                        .object_name
+                        .get_content(|name| !name.starts_with("orig_"))
+                })
+                .map(|ex| (i, ex))
+        })
         .collect();
     // use index so i can push to exports
-    for func in orig
+    for orig in orig
         .asset_data
         .exports
         .iter_mut()
         .filter_map(|ex| unreal_asset::cast!(Export, FunctionExport, ex))
     {
-        if !funcs
-            .iter()
-            .any(|(_, fun)| fun.get_base_export().object_name == func.get_base_export().object_name)
-        {
+        if !funcs.iter().any(|(_, func)| {
+            func.get_base_export().object_name.get_content(|func| {
+                orig.get_base_export().object_name == func.trim_start_matches('_')
+            })
+        }) {
             continue;
         }
-        func.get_base_export_mut().object_name = name_map.get_mut().add_fname(
-            &func
+        orig.get_base_export_mut().object_name = name_map.get_mut().add_fname(
+            &orig
                 .get_base_export()
                 .object_name
                 .get_content(|name| format!("orig_{name}")),

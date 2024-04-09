@@ -6,6 +6,9 @@ fn on_pointer(pointer: &mut KismetPropertyPointer, func: &mut impl FnMut(&mut Pa
     if let Some(old) = pointer.old.as_mut() {
         func(old)
     }
+    if let Some(new) = pointer.new.as_mut() {
+        func(&mut new.resolved_owner);
+    }
 }
 
 pub fn on_kismet(inst: &mut K, func: &mut impl FnMut(&mut PackageIndex)) {

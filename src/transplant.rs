@@ -15,6 +15,15 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     donor: &Asset<D>,
 ) {
     let mut children = get_actor_exports(index, donor, recipient.asset_data.exports.len());
+    // allow for overriding forbidden functions
+    for child in children
+        .iter_mut()
+        .map(ExportBaseTrait::get_base_export_mut)
+    {
+        child.object_name = child
+            .object_name
+            .get_content(|name| recipient.add_fname(name.trim_start_matches('_')))
+    }
     // resolve all import references from exports
     let import_offset = recipient.imports.len() as i32;
     let mut imports = Vec::new();
@@ -152,29 +161,6 @@ fn get_actor_exports<C: std::io::Seek + std::io::Read>(
     children
 }
 
-/// on all possible export references
-fn on_export_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut PackageIndex)) {
-    if let Some(norm) = export.get_normal_export_mut() {
-        for prop in &mut norm.properties {
-            on_props(prop, &mut func);
-        }
-    }
-    let export = export.get_base_export_mut();
-    export
-        .create_before_create_dependencies
-        .iter_mut()
-        .for_each(&mut func);
-    export
-        .create_before_serialization_dependencies
-        .iter_mut()
-        .for_each(&mut func);
-    export
-        .serialization_before_create_dependencies
-        .iter_mut()
-        .for_each(&mut func);
-    func(&mut export.outer_index);
-}
-
 fn on_norm(norm: &mut NormalExport<PackageIndex>, func: &mut impl FnMut(&mut PackageIndex)) {
     for prop in &mut norm.properties {
         on_props(prop, func);
@@ -198,8 +184,7 @@ fn on_struct(struc: &mut StructExport<PackageIndex>, mut func: &mut impl FnMut(&
     on_norm(&mut struc.normal_export, func)
 }
 
-/// on all of an export's possible references to imports
-fn on_import_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut PackageIndex)) {
+fn on_export(export: &mut Export<PackageIndex>, mut func: &mut impl FnMut(&mut PackageIndex)) {
     match export {
         Export::BaseExport(_) => (),
         Export::ClassExport(class) => {
@@ -210,9 +195,9 @@ fn on_import_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut P
             }
             func(&mut class.class_generated_by);
             func(&mut class.class_default_object);
-            on_struct(&mut class.struct_export, &mut func);
+            on_struct(&mut class.struct_export, func);
         }
-        Export::EnumExport(en) => on_norm(&mut en.normal_export, &mut func),
+        Export::EnumExport(en) => on_norm(&mut en.normal_export, func),
         Export::LevelExport(lev) => {
             lev.actors.iter_mut().for_each(&mut func);
             func(&mut lev.model);
@@ -220,38 +205,62 @@ fn on_import_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut P
             func(&mut lev.level_script);
             func(&mut lev.nav_list_start);
             func(&mut lev.nav_list_end);
-            on_norm(&mut lev.normal_export, &mut func)
+            on_norm(&mut lev.normal_export, func)
         }
-        Export::NormalExport(norm) => on_norm(norm, &mut func),
+        Export::NormalExport(norm) => on_norm(norm, func),
         Export::PropertyExport(prop) => {
-            uprop::on_uprop(&mut prop.property, &mut func);
-            on_norm(&mut prop.normal_export, &mut func);
+            uprop::on_uprop(&mut prop.property, func);
+            on_norm(&mut prop.normal_export, func);
         }
         Export::RawExport(_) => (),
-        Export::StringTableExport(str) => on_norm(&mut str.normal_export, &mut func),
-        Export::StructExport(struc) => on_struct(struc, &mut func),
+        Export::StringTableExport(str) => on_norm(&mut str.normal_export, func),
+        Export::StructExport(struc) => on_struct(struc, func),
         Export::UserDefinedStructExport(uds) => {
             for prop in &mut uds.default_struct_instance {
-                on_props(prop, &mut func)
+                on_props(prop, func)
             }
-            on_struct(&mut uds.struct_export, &mut func)
+            on_struct(&mut uds.struct_export, func)
         }
-        Export::FunctionExport(fun) => on_struct(&mut fun.struct_export, &mut func),
+        Export::FunctionExport(fun) => on_struct(&mut fun.struct_export, func),
         Export::DataTableExport(data) => {
             for data in &mut data.table.data {
                 for entry in &mut data.value {
-                    on_props(entry, &mut func);
+                    on_props(entry, func);
                 }
             }
-            on_norm(&mut data.normal_export, &mut func);
+            on_norm(&mut data.normal_export, func);
         }
         Export::WorldExport(world) => {
             func(&mut world.persistent_level);
             world.extra_objects.iter_mut().for_each(&mut func);
             world.streaming_levels.iter_mut().for_each(&mut func);
-            on_norm(&mut world.normal_export, &mut func);
+            on_norm(&mut world.normal_export, func);
         }
     }
+}
+
+/// on all possible export references
+fn on_export_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut PackageIndex)) {
+    on_export(export, &mut func);
+    let export = export.get_base_export_mut();
+    export
+        .create_before_create_dependencies
+        .iter_mut()
+        .for_each(&mut func);
+    export
+        .create_before_serialization_dependencies
+        .iter_mut()
+        .for_each(&mut func);
+    export
+        .serialization_before_create_dependencies
+        .iter_mut()
+        .for_each(&mut func);
+    func(&mut export.outer_index);
+}
+
+/// on all of an export's possible references to imports
+fn on_import_refs(export: &mut Export<PackageIndex>, mut func: impl FnMut(&mut PackageIndex)) {
+    on_export(export, &mut func);
     let export = export.get_base_export_mut();
     func(&mut export.class_index);
     func(&mut export.template_index);

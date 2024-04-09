@@ -8,7 +8,7 @@ version = "1.0.0"
 edition = "2021"
 
 [dependencies]
-unreal_asset = { git = "https://github.com/astrotechies/unrealmodding", rev = "84e60cc" }
+unreal_asset = { git = "https://github.com/astrotechies/unrealmodding", rev = "e1fed1f" }
 clap = { version = "4.5", features = ["derive"] }
 rfd = "0.14"
 

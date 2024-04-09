@@ -12,5 +12,8 @@ unreal_asset = { git = "https://github.com/astrotechies/unrealmodding", rev = "e
 clap = { version = "4.5", features = ["derive"] }
 rfd = "0.14"
 
+[build-dependencies]
+winres = "0.1"
+
 [profile.dev.package."*"]
 opt-level = 3

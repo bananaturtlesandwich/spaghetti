@@ -47,6 +47,10 @@ fn main() {
     let mut orig = io::open(&orig_path, version).unwrap();
     let mut name_map = orig.get_name_map().clone_resource();
     // why does it need the import for cast?
+    let (class, exports) = orig.asset_data.exports.split_at_mut(1);
+    let Export::ClassExport(class) = &mut class[0] else {
+        std::process::exit(0)
+    };
     use unreal_asset::Export;
     let mut funcs: Vec<_> = hook
         .asset_data
@@ -56,16 +60,14 @@ fn main() {
         .filter_map(|(i, ex)| {
             unreal_asset::cast!(Export, FunctionExport, ex).and_then(|ex| {
                 ex.get_base_export().object_name.get_content(|name| {
-                    (!name.starts_with("orig_") && !name.starts_with("ExecuteUbergraph_"))
-                        .then(|| (i, name.to_string()))
+                    (!name.starts_with("orig_")
+                        && !name.starts_with("ExecuteUbergraph_")
+                        && !class.func_map.iter_key().any(|(_, key, _)| key == name))
+                    .then(|| (i, name.to_string()))
                 })
             })
         })
         .collect();
-    let (class, exports) = orig.asset_data.exports.split_at_mut(1);
-    let Export::ClassExport(class) = &mut class[0] else {
-        std::process::exit(0)
-    };
     let mut hooks = Vec::with_capacity(funcs.capacity());
     for (i, orig) in exports
         .iter_mut()
@@ -97,9 +99,6 @@ fn main() {
     // len + 1 since exports is one export short
     let mut insert = exports.len() + 1;
     for (i, (_, name)) in funcs.iter().enumerate() {
-        if class.func_map.keys().any(|key| key == name) {
-            continue;
-        }
         class.func_map.insert(
             name_map.get_mut().add_fname(name),
             unreal_asset::types::PackageIndex {

@@ -31,11 +31,18 @@ Options:
 # guide
 - dummy the asset you want to hook (create actor with same folder structure in your unreal project)
 - delete all events (you hook events using functions)
-- dummy the function you want to hook with the same name, arguments and return type
-- if the name is reserved (e.g ReceiveBeginPlay) then put an underscore before it (e.g _ReceiveBeginPlay)
-- (other reserved names i know of include ReceiveEndPlay and ReceiveTick)
-- to call the original duplicate your dummied function and put an `orig_` before (e.g orig_ReceiveBeginPlay)
-- code whatever you want
+- the default events have different names internally you will need to use
+
+| Event           | Internal Name    |
+|-----------------|------------------|
+| Event BeginPlay | ReceiveBeginPlay |
+| Event End Play  | ReceiveEndPlay   |
+| Event Tick      | ReceiveTick      |
+
+- dummy the function you want to hook with same arguments and return type and put an `hook_` before the name
+- e.g the hook for `ReceiveBeginPlay` would be named `hook_ReceiveBeginPlay`
+- to call the original duplicate your dummied function and replace `hook_` with `orig_`
+- code whatever you want (you can dummy other functions and use them as normal)
 - cook/package the project
 - dump the original asset from the game
 - apply hooks using spaghetti (refer to usage)

@@ -48,7 +48,7 @@ fn main() {
     let mut name_map = orig.get_name_map().clone_resource();
     // why does it need the import for cast?
     use unreal_asset::Export;
-    let funcs: Vec<_> = hook
+    let mut funcs: Vec<_> = hook
         .asset_data
         .exports
         .iter()
@@ -57,7 +57,7 @@ fn main() {
             unreal_asset::cast!(Export, FunctionExport, ex).and_then(|ex| {
                 ex.get_base_export().object_name.get_content(|name| {
                     (!name.starts_with("orig_") && !name.starts_with("ExecuteUbergraph_"))
-                        .then(|| (i, name.trim_start_matches('_').to_string()))
+                        .then(|| (i, name.to_string()))
                 })
             })
         })
@@ -66,17 +66,20 @@ fn main() {
     let Export::ClassExport(class) = &mut class[0] else {
         std::process::exit(0)
     };
+    let mut hooks = Vec::with_capacity(funcs.capacity());
     for (i, orig) in exports
         .iter_mut()
         .enumerate()
         .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
     {
-        if !funcs
-            .iter()
-            .any(|(_, name)| orig.get_base_export().object_name == name.as_str())
-        {
+        let Some(hook) = funcs.iter().position(|(_, name)| {
+            orig.get_base_export()
+                .object_name
+                .get_content(|orig| &format!("hook_{orig}") == name)
+        }) else {
             continue;
-        }
+        };
+        hooks.push(funcs.remove(hook));
         orig.get_base_export_mut().object_name = name_map.get_mut().add_fname(
             &orig
                 .get_base_export()
@@ -92,8 +95,21 @@ fn main() {
         )
     }
     // len + 1 since exports is one export short
-    let insert = exports.len() + 1;
+    let mut insert = exports.len() + 1;
     for (i, (_, name)) in funcs.iter().enumerate() {
+        if class.func_map.keys().any(|key| key == name) {
+            continue;
+        }
+        class.func_map.insert(
+            name_map.get_mut().add_fname(name),
+            unreal_asset::types::PackageIndex {
+                index: (insert + i + 1) as i32,
+            },
+        );
+    }
+    insert += funcs.len();
+    for (i, (_, name)) in hooks.iter().enumerate() {
+        let name = name.trim_start_matches("hook_");
         println!("{name} hooked");
         class.func_map.insert(
             name_map.get_mut().add_fname(name),
@@ -102,7 +118,7 @@ fn main() {
             },
         );
     }
-    for (i, _) in funcs {
+    for (i, _) in funcs.into_iter().chain(hooks.into_iter()) {
         transplant::transplant(i, &mut orig, &hook)
     }
     io::save(&mut orig, output.unwrap_or(orig_path)).unwrap();

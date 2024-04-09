@@ -15,14 +15,13 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     donor: &Asset<D>,
 ) {
     let mut children = get_actor_exports(index, donor, recipient.asset_data.exports.len());
-    // allow for overriding forbidden functions
     for child in children
         .iter_mut()
         .map(ExportBaseTrait::get_base_export_mut)
     {
         child.object_name = child
             .object_name
-            .get_content(|name| recipient.add_fname(name.trim_start_matches('_')))
+            .get_content(|name| recipient.add_fname(name.trim_start_matches("hook_")))
     }
     // resolve all import references from exports
     let import_offset = recipient.imports.len() as i32;

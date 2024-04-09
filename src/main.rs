@@ -12,22 +12,28 @@ fn main() {
         mut output,
         version,
     } = cli::Cli::parse();
-    let ignored = hook_path.is_none() && orig_path.is_none() && output.is_none();
+    let ignored = hook_path.is_none() && orig_path.is_none();
     let hook_path = hook_path.unwrap_or_else(|| {
         rfd::FileDialog::new()
             .set_title("select the hook-containing blueprint")
             .add_filter("unreal asset", &["uasset", "umap"])
             .pick_file()
-            .unwrap_or_else(|| std::process::exit(0))
+            .unwrap_or_else(|| {
+                eprintln!("no hook-containing blueprint selected");
+                std::process::exit(0);
+            })
     });
     let orig_path = orig_path.unwrap_or_else(|| {
         rfd::FileDialog::new()
             .set_title("select the original blueprint")
             .add_filter("unreal asset", &["uasset", "umap"])
             .pick_file()
-            .unwrap_or_else(|| std::process::exit(0))
+            .unwrap_or_else(|| {
+                eprintln!("no original blueprint selected");
+                std::process::exit(0);
+            })
     });
-    if ignored {
+    if ignored && output.is_none() {
         if let Some(path) = rfd::FileDialog::new()
             .set_title("save hooked blueprint [default: overwrites original]")
             .add_filter("unreal asset", &["uasset", "umap"])
@@ -42,13 +48,37 @@ fn main() {
             output = Some(path)
         }
     }
-    let version = version.0;
-    let hook = io::open(hook_path, version).unwrap();
-    let mut orig = io::open(&orig_path, version).unwrap();
+    let version = match version {
+        Some(version) => version.0,
+        // None if ignored => {
+        //     print!("version [default: 5.1]: ");
+        //     std::io::Write::flush(&mut std::io::stdout())
+        //         .map_err(clap::Error::from)
+        //         .unwrap_or_else(|e| e.exit());
+        //     let mut buf = String::new();
+        //     std::io::stdin()
+        //         .read_line(&mut buf)
+        //         .map_err(clap::Error::from)
+        //         .unwrap_or_else(|e| e.exit());
+        //     cli::VersionParser::parse(&buf).unwrap_or(
+        //         unreal_asset::engine_version::EngineVersion::VER_UE5_1,
+        //     )
+        // }
+        None => unreal_asset::engine_version::EngineVersion::VER_UE5_1,
+    };
+    let hook = io::open(hook_path, version).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        std::process::exit(0);
+    });
+    let mut orig = io::open(&orig_path, version).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        std::process::exit(0);
+    });
     let mut name_map = orig.get_name_map().clone_resource();
     // why does it need the import for cast?
     let (class, exports) = orig.asset_data.exports.split_at_mut(1);
     let Export::ClassExport(class) = &mut class[0] else {
+        eprintln!("provided file is not a blueprint");
         std::process::exit(0)
     };
     use unreal_asset::Export;
@@ -120,5 +150,8 @@ fn main() {
     for (i, _) in funcs.into_iter().chain(hooks.into_iter()) {
         transplant::transplant(i, &mut orig, &hook)
     }
-    io::save(&mut orig, output.unwrap_or(orig_path)).unwrap();
+    io::save(&mut orig, output.unwrap_or(orig_path)).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        std::process::exit(0);
+    });
 }

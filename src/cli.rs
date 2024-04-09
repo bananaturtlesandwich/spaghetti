@@ -9,23 +9,12 @@ pub struct Cli {
     /// path to original blueprint
     #[arg(value_name = "original")]
     pub orig: Option<std::path::PathBuf>,
-    /// engine version used to create the blueprints
-    #[arg(short, value_parser = clap::value_parser!(Version), default_value = "5.1")]
-    pub version: Version,
+    /// engine version used to create the blueprints [default: 5.1]
+    #[arg(short, value_parser = clap::value_parser!(Version))]
+    pub version: Option<Version>,
     /// path to save the hooked blueprint to [default: overwrites original]
     #[arg(short, value_name = "output path")]
     pub output: Option<std::path::PathBuf>,
-}
-
-impl Default for Cli {
-    fn default() -> Self {
-        Self {
-            hook: None,
-            orig: None,
-            version: Version(E::VER_UE5_1),
-            output: None,
-        }
-    }
 }
 
 #[derive(Clone)]
@@ -40,6 +29,14 @@ impl clap::builder::ValueParserFactory for Version {
 
 #[derive(Clone)]
 pub struct VersionParser;
+impl VersionParser {
+    pub fn parse(value: &str) -> Option<Version> {
+        let value = value.trim();
+        VERSIONS
+            .iter()
+            .find_map(|(ver, name)| (&value == name).then_some(Version(*ver)))
+    }
+}
 impl clap::builder::TypedValueParser for VersionParser {
     type Value = Version;
 
@@ -49,11 +46,7 @@ impl clap::builder::TypedValueParser for VersionParser {
         _: Option<&clap::Arg>,
         value: &std::ffi::OsStr,
     ) -> Result<Self::Value, clap::Error> {
-        VERSIONS
-            .iter()
-            .find_map(|(ver, name)| {
-                (&value.to_str().unwrap_or_default() == name).then_some(Version(*ver))
-            })
+        Self::parse(&value.to_str().unwrap_or_default())
             .ok_or_else(|| clap::Error::new(clap::error::ErrorKind::InvalidValue))
     }
 }

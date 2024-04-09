@@ -4,7 +4,7 @@ authors = ["spuds"]
 repository = "https://github.com/bananaturtlesandwich/spaghetti"
 description = "a function hooker for cooked unreal engine blueprints"
 readme = "README.md"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 
 [dependencies]

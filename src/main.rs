@@ -50,20 +50,20 @@ fn main() {
     }
     let version = match version {
         Some(version) => version.0,
-        // None if ignored => {
-        //     print!("version [default: 5.1]: ");
-        //     std::io::Write::flush(&mut std::io::stdout())
-        //         .map_err(clap::Error::from)
-        //         .unwrap_or_else(|e| e.exit());
-        //     let mut buf = String::new();
-        //     std::io::stdin()
-        //         .read_line(&mut buf)
-        //         .map_err(clap::Error::from)
-        //         .unwrap_or_else(|e| e.exit());
-        //     cli::VersionParser::parse(&buf).unwrap_or(
-        //         unreal_asset::engine_version::EngineVersion::VER_UE5_1,
-        //     )
-        // }
+        None if ignored => {
+            print!("version [default: 5.1]: ");
+            std::io::Write::flush(&mut std::io::stdout())
+                .map_err(clap::Error::from)
+                .unwrap_or_else(|e| e.exit());
+            let mut buf = String::new();
+            std::io::stdin()
+                .read_line(&mut buf)
+                .map_err(clap::Error::from)
+                .unwrap_or_else(|e| e.exit());
+            cli::VersionParser::parse(&buf)
+                .map(|v| v.0)
+                .unwrap_or(unreal_asset::engine_version::EngineVersion::VER_UE5_1)
+        }
         None => unreal_asset::engine_version::EngineVersion::VER_UE5_1,
     };
     let hook = io::open(hook_path, version).unwrap_or_else(|e| {
@@ -76,8 +76,14 @@ fn main() {
     });
     let mut name_map = orig.get_name_map().clone_resource();
     // why does it need the import for cast?
-    let (class, exports) = orig.asset_data.exports.split_at_mut(1);
-    let Export::ClassExport(class) = &mut class[0] else {
+    let split = orig
+        .asset_data
+        .exports
+        .iter()
+        .position(|ex| matches!(ex, Export::ClassExport(_)))
+        .unwrap_or_default();
+    let (class, exports) = orig.asset_data.exports.split_at_mut(split + 1);
+    let Export::ClassExport(class) = &mut class[split] else {
         eprintln!("provided file is not a blueprint");
         std::process::exit(0)
     };
@@ -121,13 +127,11 @@ fn main() {
         class.func_map.insert(
             orig.get_base_export().object_name.clone(),
             unreal_asset::types::PackageIndex {
-                // i + 2 since exports is one export short
-                index: (i + 2) as i32,
+                index: (i + split + 2) as i32,
             },
         )
     }
-    // len + 1 since exports is one export short
-    let mut insert = exports.len() + 1;
+    let mut insert = exports.len() + split + 1;
     for (i, (_, name)) in funcs.iter().enumerate() {
         class.func_map.insert(
             name_map.get_mut().add_fname(name),

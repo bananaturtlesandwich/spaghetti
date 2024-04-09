@@ -37,7 +37,7 @@ Options:
 - mind blown
 
 # credits
-- [truman](https://github.com/trumank) for creating [kismet-analyzer](https://github.com/trumank/kismet-analyzer) since, although implemented differently it helped me come up with this idea
+- [truman](https://github.com/trumank) for creating [kismet-analyzer](https://github.com/trumank/kismet-analyzer) since, although implemented differently, it helped me come up with this idea
 - [atenfyr](https://github.com/atenfyr) for creating the extensive [UAssetAPI](https://github.com/atenfyr/UAssetAPI) which made this project possible ❤️
 - [localcc](https://github.com/localcc) for rewriting it as [unreal_asset](https://github.com/AstroTechies/unrealmodding/tree/main/unreal_asset), allowing me to program this in [rust <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Crab.png" width="20" />](https://www.rust-lang.org/)
 

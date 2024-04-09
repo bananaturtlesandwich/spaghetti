@@ -94,6 +94,7 @@ fn main() {
     // len + 1 since exports is one export short
     let insert = exports.len() + 1;
     for (i, (_, name)) in funcs.iter().enumerate() {
+        println!("{name} hooked");
         class.func_map.insert(
             name_map.get_mut().add_fname(name),
             unreal_asset::types::PackageIndex {

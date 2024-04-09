@@ -2,7 +2,7 @@
 name = "spaghetti"
 authors = ["spuds"]
 repository = "https://github.com/bananaturtlesandwich/spaghetti"
-description = "a kismet hooker for cooked unreal engine blueprints"
+description = "a function hooker for cooked unreal engine blueprints"
 readme = "README.md"
 version = "1.0.0"
 edition = "2021"

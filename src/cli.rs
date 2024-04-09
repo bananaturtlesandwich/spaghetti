@@ -12,12 +12,8 @@ pub struct Cli {
     /// engine version used to create the blueprints
     #[arg(short, value_parser = clap::value_parser!(Version), default_value = "5.1")]
     pub version: Version,
-    /// path to save the hooked blueprint to
-    #[arg(
-        short,
-        value_name = "output path",
-        default_value = "path to original blueprint"
-    )]
+    /// path to save the hooked blueprint to [default: overwrites original]
+    #[arg(short, value_name = "output path")]
     pub output: Option<std::path::PathBuf>,
 }
 

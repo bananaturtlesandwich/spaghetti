@@ -9,21 +9,39 @@ fn main() {
     let cli::Cli {
         hook: hook_path,
         orig: orig_path,
-        output,
+        mut output,
         version,
     } = cli::Cli::parse();
+    let ignored = hook_path.is_none() && orig_path.is_none() && output.is_none();
     let hook_path = hook_path.unwrap_or_else(|| {
         rfd::FileDialog::new()
             .set_title("select the hook-containing blueprint")
+            .add_filter("unreal asset", &["uasset", "umap"])
             .pick_file()
             .unwrap_or_else(|| std::process::exit(0))
     });
     let orig_path = orig_path.unwrap_or_else(|| {
         rfd::FileDialog::new()
             .set_title("select the original blueprint")
+            .add_filter("unreal asset", &["uasset", "umap"])
             .pick_file()
             .unwrap_or_else(|| std::process::exit(0))
     });
+    if ignored {
+        if let Some(path) = rfd::FileDialog::new()
+            .set_title("save hooked blueprint [default: overwrites original]")
+            .add_filter("unreal asset", &["uasset", "umap"])
+            .set_file_name(
+                orig_path
+                    .file_name()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or_default(),
+            )
+            .save_file()
+        {
+            output = Some(path)
+        }
+    }
     let version = version.0;
     let hook = io::open(hook_path, version).unwrap();
     let mut orig = io::open(&orig_path, version).unwrap();

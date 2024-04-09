@@ -55,12 +55,10 @@ fn main() {
         .enumerate()
         .filter_map(|(i, ex)| {
             unreal_asset::cast!(Export, FunctionExport, ex).and_then(|ex| {
-                ex.get_base_export()
-                    .object_name
-                    .get_content(|name| {
-                        !name.starts_with("orig_") && !name.starts_with("ExecuteUbergraph_")
-                    })
-                    .then_some((i, ex))
+                ex.get_base_export().object_name.get_content(|name| {
+                    (!name.starts_with("orig_") && !name.starts_with("ExecuteUbergraph_"))
+                        .then(|| (i, name.trim_start_matches('_').to_string()))
+                })
             })
         })
         .collect();
@@ -73,11 +71,10 @@ fn main() {
         .enumerate()
         .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
     {
-        if !funcs.iter().any(|(_, func)| {
-            func.get_base_export().object_name.get_content(|func| {
-                orig.get_base_export().object_name == func.trim_start_matches('_')
-            })
-        }) {
+        if !funcs
+            .iter()
+            .any(|(_, name)| orig.get_base_export().object_name == name.as_str())
+        {
             continue;
         }
         orig.get_base_export_mut().object_name = name_map.get_mut().add_fname(
@@ -96,11 +93,9 @@ fn main() {
     }
     // len + 1 since exports is one export short
     let insert = exports.len() + 1;
-    for (i, (_, func)) in funcs.iter().enumerate() {
+    for (i, (_, name)) in funcs.iter().enumerate() {
         class.func_map.insert(
-            func.get_base_export()
-                .object_name
-                .get_content(|name| name_map.get_mut().add_fname(name.trim_start_matches('_'))),
+            name_map.get_mut().add_fname(name),
             unreal_asset::types::PackageIndex {
                 index: (insert + i + 1) as i32,
             },

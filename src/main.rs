@@ -36,20 +36,24 @@ fn main() {
         .iter()
         .enumerate()
         .filter_map(|(i, ex)| {
-            unreal_asset::cast!(Export, FunctionExport, ex)
-                .filter(|ex| {
-                    ex.get_base_export().object_name.get_content(|name| {
+            unreal_asset::cast!(Export, FunctionExport, ex).and_then(|ex| {
+                ex.get_base_export()
+                    .object_name
+                    .get_content(|name| {
                         !name.starts_with("orig_") && !name.starts_with("ExecuteUbergraph_")
                     })
-                })
-                .map(|ex| (i, ex))
+                    .then_some((i, ex))
+            })
         })
         .collect();
-    for orig in orig
-        .asset_data
-        .exports
+    let (class, exports) = orig.asset_data.exports.split_at_mut(1);
+    let Export::ClassExport(class) = &mut class[0] else {
+        std::process::exit(0)
+    };
+    for (i, orig) in exports
         .iter_mut()
-        .filter_map(|ex| unreal_asset::cast!(Export, FunctionExport, ex))
+        .enumerate()
+        .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
     {
         if !funcs.iter().any(|(_, func)| {
             func.get_base_export().object_name.get_content(|func| {
@@ -63,6 +67,25 @@ fn main() {
                 .get_base_export()
                 .object_name
                 .get_content(|name| format!("orig_{name}")),
+        );
+        class.func_map.insert(
+            orig.get_base_export().object_name.clone(),
+            unreal_asset::types::PackageIndex {
+                // i + 2 since exports is one export short
+                index: (i + 2) as i32,
+            },
+        )
+    }
+    // len + 1 since exports is one export short
+    let insert = exports.len() + 1;
+    for (i, (_, func)) in funcs.iter().enumerate() {
+        class.func_map.insert(
+            func.get_base_export()
+                .object_name
+                .get_content(|name| name_map.get_mut().add_fname(name.trim_start_matches('_'))),
+            unreal_asset::types::PackageIndex {
+                index: (insert + i + 1) as i32,
+            },
         );
     }
     for (i, _) in funcs {

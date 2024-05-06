@@ -82,8 +82,8 @@ fn main() {
         .iter()
         .position(|ex| matches!(ex, Export::ClassExport(_)))
         .unwrap_or_default();
-    let (class, exports) = orig.asset_data.exports.split_at_mut(split + 1);
-    let Export::ClassExport(class) = &mut class[split] else {
+    let (class, back) = orig.asset_data.exports.split_at_mut(split + 1);
+    let Some((Export::ClassExport(class), front)) = class.split_last_mut() else {
         eprintln!("provided file is not a blueprint");
         std::process::exit(0)
     };
@@ -105,33 +105,36 @@ fn main() {
         })
         .collect();
     let mut hooks = Vec::with_capacity(funcs.capacity());
-    for (i, orig) in exports
-        .iter_mut()
-        .enumerate()
-        .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
-    {
-        let Some(hook) = funcs.iter().position(|(_, name)| {
-            orig.get_base_export()
-                .object_name
-                .get_content(|orig| &format!("hook_{orig}") == name)
-        }) else {
-            continue;
+    let mut run =
+        |exports: &mut [Export<unreal_asset::types::PackageIndex>], offset| {
+            for (i, orig) in exports.iter_mut().enumerate().filter_map(|(i, ex)| {
+                unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex))
+            }) {
+                let Some(hook) = funcs.iter().position(|(_, name)| {
+                    orig.get_base_export()
+                        .object_name
+                        .get_content(|orig| &format!("hook_{orig}") == name)
+                }) else {
+                    continue;
+                };
+                hooks.push(funcs.remove(hook));
+                orig.get_base_export_mut().object_name = name_map.get_mut().add_fname(
+                    &orig
+                        .get_base_export()
+                        .object_name
+                        .get_content(|name| format!("orig_{name}")),
+                );
+                class.func_map.insert(
+                    orig.get_base_export().object_name.clone(),
+                    unreal_asset::types::PackageIndex {
+                        index: (i + offset) as i32,
+                    },
+                )
+            }
         };
-        hooks.push(funcs.remove(hook));
-        orig.get_base_export_mut().object_name = name_map.get_mut().add_fname(
-            &orig
-                .get_base_export()
-                .object_name
-                .get_content(|name| format!("orig_{name}")),
-        );
-        class.func_map.insert(
-            orig.get_base_export().object_name.clone(),
-            unreal_asset::types::PackageIndex {
-                index: (i + split + 2) as i32,
-            },
-        )
-    }
-    let mut insert = exports.len() + split + 1;
+    run(front, 1);
+    run(back, split + 2);
+    let mut insert = back.len() + split + 1;
     for (i, (_, name)) in funcs.iter().enumerate() {
         class.func_map.insert(
             name_map.get_mut().add_fname(name),

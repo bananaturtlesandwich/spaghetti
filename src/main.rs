@@ -1,5 +1,6 @@
 use clap::Parser;
-use unreal_asset::exports::ExportBaseTrait;
+// export imported because cast macro doesn't use pattern
+use unreal_asset::exports::{Export, ExportBaseTrait};
 
 mod cli;
 mod io;
@@ -75,7 +76,6 @@ fn main() {
         std::process::exit(0);
     });
     let mut name_map = orig.get_name_map().clone_resource();
-    // why does it need the import for cast?
     let split = orig
         .asset_data
         .exports
@@ -84,10 +84,27 @@ fn main() {
         .unwrap_or_default();
     let (class, back) = orig.asset_data.exports.split_at_mut(split + 1);
     let Some((Export::ClassExport(class), front)) = class.split_last_mut() else {
-        eprintln!("provided file is not a blueprint");
+        eprintln!("provided original is not a blueprint");
         std::process::exit(0)
     };
-    use unreal_asset::Export;
+    let Some(vars) = hook.asset_data.exports.iter().find_map(|ex| {
+        unreal_asset::cast!(Export, ClassExport, ex)
+            .map(|class| class.struct_export.loaded_properties.clone())
+    }) else {
+        eprintln!("provided hook is not a blueprint");
+        std::process::exit(0)
+    };
+    for var in vars {
+        if !class
+            .struct_export
+            .loaded_properties
+            .iter()
+            .any(|existing| name(existing) == name(&var))
+        {
+            // still need to import classes if objectproperty
+            class.struct_export.loaded_properties.push(var);
+        }
+    }
     let mut funcs: Vec<_> = hook
         .asset_data
         .exports
@@ -161,4 +178,27 @@ fn main() {
         eprintln!("{e}");
         std::process::exit(0);
     });
+}
+
+fn name(existing: &unreal_asset::fproperty::FProperty) -> &unreal_asset::types::FName {
+    use unreal_asset::fproperty::FProperty;
+    match existing {
+        FProperty::FGenericProperty(prop) => &prop.name,
+        FProperty::FEnumProperty(prop) => &prop.generic_property.name,
+        FProperty::FArrayProperty(prop) => &prop.generic_property.name,
+        FProperty::FSetProperty(prop) => &prop.generic_property.name,
+        FProperty::FObjectProperty(prop) => &prop.generic_property.name,
+        FProperty::FSoftObjectProperty(prop) => &prop.generic_property.name,
+        FProperty::FClassProperty(prop) => &prop.generic_property.name,
+        FProperty::FSoftClassProperty(prop) => &prop.generic_property.name,
+        FProperty::FDelegateProperty(prop) => &prop.generic_property.name,
+        FProperty::FMulticastDelegateProperty(prop) => &prop.generic_property.name,
+        FProperty::FMulticastInlineDelegateProperty(prop) => &prop.generic_property.name,
+        FProperty::FInterfaceProperty(prop) => &prop.generic_property.name,
+        FProperty::FMapProperty(prop) => &prop.generic_property.name,
+        FProperty::FBoolProperty(prop) => &prop.generic_property.name,
+        FProperty::FByteProperty(prop) => &prop.generic_property.name,
+        FProperty::FStructProperty(prop) => &prop.generic_property.name,
+        FProperty::FNumericProperty(prop) => &prop.generic_property.name,
+    }
 }

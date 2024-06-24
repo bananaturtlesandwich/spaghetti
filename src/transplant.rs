@@ -70,9 +70,9 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     // finally add the exports
     recipient.asset_data.exports.append(&mut children);
 
-    // resolve all import references from exports
+    // resolve all import references from imports
     let mut i = 0;
-    // use a while loop because the vector is expanding while the operation occurs & imports.len() updates every loop
+    // use a while loop because the vector is expanding while the operation occurs (imports.len() updates every loop)
     while i < imports.len() {
         if let Some(parent) = donor.get_import(imports[i].outer_index) {
             imports[i].outer_index.index = match recipient.find_import_no_index(

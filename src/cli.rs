@@ -3,11 +3,8 @@ use unreal_asset::engine_version::EngineVersion as E;
 #[derive(clap::Parser)]
 #[command()]
 pub struct Cli {
-    /// path to hook-containing blueprint
-    #[arg(value_name = "hook")]
-    pub hook: Option<std::path::PathBuf>,
-    /// path to original blueprint
-    #[arg(value_name = "original")]
+    /// path to blueprint
+    #[arg(value_name = "blueprint")]
     pub orig: Option<std::path::PathBuf>,
     /// engine version used to create the blueprints [default: 5.1]
     #[arg(short, value_parser = clap::value_parser!(Version))]

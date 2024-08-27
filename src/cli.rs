@@ -43,7 +43,7 @@ impl clap::builder::TypedValueParser for VersionParser {
         _: Option<&clap::Arg>,
         value: &std::ffi::OsStr,
     ) -> Result<Self::Value, clap::Error> {
-        Self::parse(&value.to_str().unwrap_or_default())
+        Self::parse(value.to_str().unwrap_or_default())
             .ok_or_else(|| clap::Error::new(clap::error::ErrorKind::InvalidValue))
     }
 }

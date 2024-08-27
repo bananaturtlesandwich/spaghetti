@@ -1,0 +1,2944 @@
+ExPushExecutionFlow(
+    ExPushExecutionFlow {
+        token: ExPushExecutionFlow,
+        pushing_address: 1471,
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_GetAssetRegistry_ReturnValue",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_GetAssetRegistry_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -17,
+                },
+                parameters: [],
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Conv_NameToString_ReturnValue",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Conv_NameToString_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -24,
+                },
+                parameters: [
+                    ExInstanceVariable(
+                        ExInstanceVariable {
+                            token: ExInstanceVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "path",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 1,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExSetArray(
+    ExSetArray {
+        token: ExSetArray,
+        assigning_property: Some(
+            ExLocalVariable(
+                ExLocalVariable {
+                    token: ExLocalVariable,
+                    variable: KismetPropertyPointer {
+                        old: None,
+                        new: Some(
+                            FieldPath {
+                                path: [
+                                    Backed {
+                                        value: "K2Node_MakeArray_Array",
+                                        number: 0,
+                                        ty: Package,
+                                    },
+                                ],
+                                resolved_owner: PackageIndex {
+                                    index: 2,
+                                },
+                            },
+                        ),
+                    },
+                },
+            ),
+        ),
+        array_inner_prop: None,
+        elements: [
+            ExLocalVariable(
+                ExLocalVariable {
+                    token: ExLocalVariable,
+                    variable: KismetPropertyPointer {
+                        old: None,
+                        new: Some(
+                            FieldPath {
+                                path: [
+                                    Backed {
+                                        value: "CallFunc_Conv_NameToString_ReturnValue",
+                                        number: 0,
+                                        ty: Package,
+                                    },
+                                ],
+                                resolved_owner: PackageIndex {
+                                    index: 2,
+                                },
+                            },
+                        ),
+                    },
+                },
+            ),
+        ],
+    },
+),
+ExContext(
+    ExContext {
+        token: ExContext,
+        object_expression: ExInterfaceContext(
+            ExInterfaceContext {
+                token: ExInterfaceContext,
+                interface_value: ExLocalVariable(
+                    ExLocalVariable {
+                        token: ExLocalVariable,
+                        variable: KismetPropertyPointer {
+                            old: None,
+                            new: Some(
+                                FieldPath {
+                                    path: [
+                                        Backed {
+                                            value: "CallFunc_GetAssetRegistry_ReturnValue",
+                                            number: 0,
+                                            ty: Package,
+                                        },
+                                    ],
+                                    resolved_owner: PackageIndex {
+                                        index: 2,
+                                    },
+                                },
+                            ),
+                        },
+                    },
+                ),
+            },
+        ),
+        offset: 25,
+        r_value_pointer: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        context_expression: ExVirtualFunction(
+            ExVirtualFunction {
+                token: ExVirtualFunction,
+                virtual_function_name: Backed {
+                    value: "ScanPathsSynchronous",
+                    number: 0,
+                    ty: Package,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "K2Node_MakeArray_Array",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExTrue(
+                        ExTrue {
+                            token: ExTrue,
+                        },
+                    ),
+                    ExFalse(
+                        ExFalse {
+                            token: ExFalse,
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_GetAssetRegistry_ReturnValue",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_GetAssetRegistry_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -17,
+                },
+                parameters: [],
+            },
+        ),
+    },
+),
+ExSetArray(
+    ExSetArray {
+        token: ExSetArray,
+        assigning_property: Some(
+            ExLocalVariable(
+                ExLocalVariable {
+                    token: ExLocalVariable,
+                    variable: KismetPropertyPointer {
+                        old: None,
+                        new: Some(
+                            FieldPath {
+                                path: [
+                                    Backed {
+                                        value: "CallFunc_GetAssetsByPath_OutAssetData",
+                                        number: 0,
+                                        ty: Package,
+                                    },
+                                ],
+                                resolved_owner: PackageIndex {
+                                    index: 2,
+                                },
+                            },
+                        ),
+                    },
+                },
+            ),
+        ),
+        array_inner_prop: None,
+        elements: [],
+    },
+),
+ExLetBool(
+    ExLetBool {
+        token: ExLetBool,
+        variable_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_GetAssetsByPath_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        assignment_expression: ExContext(
+            ExContext {
+                token: ExContext,
+                object_expression: ExInterfaceContext(
+                    ExInterfaceContext {
+                        token: ExInterfaceContext,
+                        interface_value: ExLocalVariable(
+                            ExLocalVariable {
+                                token: ExLocalVariable,
+                                variable: KismetPropertyPointer {
+                                    old: None,
+                                    new: Some(
+                                        FieldPath {
+                                            path: [
+                                                Backed {
+                                                    value: "CallFunc_GetAssetRegistry_ReturnValue",
+                                                    number: 0,
+                                                    ty: Package,
+                                                },
+                                            ],
+                                            resolved_owner: PackageIndex {
+                                                index: 2,
+                                            },
+                                        },
+                                    ),
+                                },
+                            },
+                        ),
+                    },
+                ),
+                offset: 34,
+                r_value_pointer: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_GetAssetsByPath_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+                context_expression: ExVirtualFunction(
+                    ExVirtualFunction {
+                        token: ExVirtualFunction,
+                        virtual_function_name: Backed {
+                            value: "GetAssetsByPath",
+                            number: 0,
+                            ty: Package,
+                        },
+                        parameters: [
+                            ExInstanceVariable(
+                                ExInstanceVariable {
+                                    token: ExInstanceVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "path",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 1,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                            ExLocalVariable(
+                                ExLocalVariable {
+                                    token: ExLocalVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "CallFunc_GetAssetsByPath_OutAssetData",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 2,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                            ExTrue(
+                                ExTrue {
+                                    token: ExTrue,
+                                },
+                            ),
+                            ExFalse(
+                                ExFalse {
+                                    token: ExFalse,
+                                },
+                            ),
+                        ],
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Loop_Counter_Variable",
+                            number: 2,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExIntConst(
+            ExIntConst {
+                token: ExIntConst,
+                value: 0,
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Array_Index_Variable",
+                            number: 3,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Array_Index_Variable",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExIntConst(
+            ExIntConst {
+                token: ExIntConst,
+                value: 0,
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Array_Length_ReturnValue",
+                            number: 3,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Length_ReturnValue",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExContext(
+            ExContext {
+                token: ExContext,
+                object_expression: ExObjectConst(
+                    ExObjectConst {
+                        token: ExObjectConst,
+                        value: PackageIndex {
+                            index: -25,
+                        },
+                    },
+                ),
+                offset: 19,
+                r_value_pointer: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Length_ReturnValue",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+                context_expression: ExFinalFunction(
+                    ExFinalFunction {
+                        token: ExFinalFunction,
+                        stack_node: PackageIndex {
+                            index: -21,
+                        },
+                        parameters: [
+                            ExLocalVariable(
+                                ExLocalVariable {
+                                    token: ExLocalVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "CallFunc_GetAssetsByPath_OutAssetData",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 2,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                        ],
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExLetBool(
+    ExLetBool {
+        token: ExLetBool,
+        variable_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Less_IntInt_ReturnValue",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        assignment_expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -23,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Loop_Counter_Variable",
+                                                number: 2,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Length_ReturnValue",
+                                                number: 3,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExJumpIfNot(
+    ExJumpIfNot {
+        token: ExJumpIfNot,
+        code_offset: 665,
+        boolean_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Less_IntInt_ReturnValue",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Array_Index_Variable",
+                            number: 3,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Array_Index_Variable",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExPushExecutionFlow(
+    ExPushExecutionFlow {
+        token: ExPushExecutionFlow,
+        pushing_address: 1323,
+    },
+),
+ExContext(
+    ExContext {
+        token: ExContext,
+        object_expression: ExObjectConst(
+            ExObjectConst {
+                token: ExObjectConst,
+                value: PackageIndex {
+                    index: -25,
+                },
+            },
+        ),
+        offset: 37,
+        r_value_pointer: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        context_expression: ExFinalFunction(
+            ExFinalFunction {
+                token: ExFinalFunction,
+                stack_node: PackageIndex {
+                    index: -20,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_GetAssetsByPath_OutAssetData",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Array_Index_Variable",
+                                                number: 3,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Get_Item",
+                                                number: 3,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExLetObj(
+    ExLetObj {
+        token: ExLetObj,
+        variable_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_GetAsset_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        assignment_expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -16,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Get_Item",
+                                                number: 3,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "K2Node_DynamicCast_AsTest_Hooks",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExObjToInterfaceCast(
+            ExObjToInterfaceCast {
+                token: ExObjToInterfaceCast,
+                class_ptr: PackageIndex {
+                    index: -2,
+                },
+                target: ExLocalVariable(
+                    ExLocalVariable {
+                        token: ExLocalVariable,
+                        variable: KismetPropertyPointer {
+                            old: None,
+                            new: Some(
+                                FieldPath {
+                                    path: [
+                                        Backed {
+                                            value: "CallFunc_GetAsset_ReturnValue",
+                                            number: 0,
+                                            ty: Package,
+                                        },
+                                    ],
+                                    resolved_owner: PackageIndex {
+                                        index: 2,
+                                    },
+                                },
+                            ),
+                        },
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "K2Node_DynamicCast_bSuccess",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExPrimitiveCast(
+            ExPrimitiveCast {
+                token: ExPrimitiveCast,
+                conversion_type: InterfaceToBool2,
+                target: ExLocalVariable(
+                    ExLocalVariable {
+                        token: ExLocalVariable,
+                        variable: KismetPropertyPointer {
+                            old: None,
+                            new: Some(
+                                FieldPath {
+                                    path: [
+                                        Backed {
+                                            value: "K2Node_DynamicCast_AsTest_Hooks",
+                                            number: 0,
+                                            ty: Package,
+                                        },
+                                    ],
+                                    resolved_owner: PackageIndex {
+                                        index: 2,
+                                    },
+                                },
+                            ),
+                        },
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExPopExecutionFlowIfNot(
+    ExPopExecutionFlowIfNot {
+        token: ExPopExecutionFlowIfNot,
+        boolean_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "K2Node_DynamicCast_bSuccess",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Array_Add_ReturnValue",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Add_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExContext(
+            ExContext {
+                token: ExContext,
+                object_expression: ExObjectConst(
+                    ExObjectConst {
+                        token: ExObjectConst,
+                        value: PackageIndex {
+                            index: -25,
+                        },
+                    },
+                ),
+                offset: 28,
+                r_value_pointer: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Add_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+                context_expression: ExFinalFunction(
+                    ExFinalFunction {
+                        token: ExFinalFunction,
+                        stack_node: PackageIndex {
+                            index: -19,
+                        },
+                        parameters: [
+                            ExInstanceVariable(
+                                ExInstanceVariable {
+                                    token: ExInstanceVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "hooks",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 1,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                            ExLocalVariable(
+                                ExLocalVariable {
+                                    token: ExLocalVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "K2Node_DynamicCast_AsTest_Hooks",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 2,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                        ],
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExPopExecutionFlow(
+    ExPopExecutionFlow {
+        token: ExPopExecutionFlow,
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Loop_Counter_Variable",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExIntConst(
+            ExIntConst {
+                token: ExIntConst,
+                value: 0,
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Array_Index_Variable",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Array_Index_Variable",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExIntConst(
+            ExIntConst {
+                token: ExIntConst,
+                value: 0,
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Array_Length_ReturnValue",
+                            number: 2,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Length_ReturnValue",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExContext(
+            ExContext {
+                token: ExContext,
+                object_expression: ExObjectConst(
+                    ExObjectConst {
+                        token: ExObjectConst,
+                        value: PackageIndex {
+                            index: -25,
+                        },
+                    },
+                ),
+                offset: 19,
+                r_value_pointer: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Length_ReturnValue",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+                context_expression: ExFinalFunction(
+                    ExFinalFunction {
+                        token: ExFinalFunction,
+                        stack_node: PackageIndex {
+                            index: -21,
+                        },
+                        parameters: [
+                            ExInstanceVariable(
+                                ExInstanceVariable {
+                                    token: ExInstanceVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "hooks",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 1,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                        ],
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExLetBool(
+    ExLetBool {
+        token: ExLetBool,
+        variable_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Less_IntInt_ReturnValue",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        assignment_expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -23,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Loop_Counter_Variable",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Length_ReturnValue",
+                                                number: 2,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExJumpIfNot(
+    ExJumpIfNot {
+        token: ExJumpIfNot,
+        code_offset: 952,
+        boolean_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Less_IntInt_ReturnValue",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Array_Index_Variable",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Array_Index_Variable",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExPushExecutionFlow(
+    ExPushExecutionFlow {
+        token: ExPushExecutionFlow,
+        pushing_address: 1397,
+    },
+),
+ExContext(
+    ExContext {
+        token: ExContext,
+        object_expression: ExObjectConst(
+            ExObjectConst {
+                token: ExObjectConst,
+                value: PackageIndex {
+                    index: -25,
+                },
+            },
+        ),
+        offset: 37,
+        r_value_pointer: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        context_expression: ExFinalFunction(
+            ExFinalFunction {
+                token: ExFinalFunction,
+                stack_node: PackageIndex {
+                    index: -20,
+                },
+                parameters: [
+                    ExInstanceVariable(
+                        ExInstanceVariable {
+                            token: ExInstanceVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "hooks",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 1,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Array_Index_Variable",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Get_Item",
+                                                number: 2,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExContext(
+    ExContext {
+        token: ExContext,
+        object_expression: ExInterfaceContext(
+            ExInterfaceContext {
+                token: ExInterfaceContext,
+                interface_value: ExLocalVariable(
+                    ExLocalVariable {
+                        token: ExLocalVariable,
+                        variable: KismetPropertyPointer {
+                            old: None,
+                            new: Some(
+                                FieldPath {
+                                    path: [
+                                        Backed {
+                                            value: "CallFunc_Array_Get_Item",
+                                            number: 2,
+                                            ty: Package,
+                                        },
+                                    ],
+                                    resolved_owner: PackageIndex {
+                                        index: 2,
+                                    },
+                                },
+                            ),
+                        },
+                    },
+                ),
+            },
+        ),
+        offset: 15,
+        r_value_pointer: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        context_expression: ExLocalVirtualFunction(
+            ExLocalVirtualFunction {
+                token: ExLocalVirtualFunction,
+                virtual_function_name: Backed {
+                    value: "pre_ReceiveBeginPlay",
+                    number: 0,
+                    ty: Package,
+                },
+                parameters: [
+                    ExSelf(
+                        ExSelf {
+                            token: ExSelf,
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExPopExecutionFlow(
+    ExPopExecutionFlow {
+        token: ExPopExecutionFlow,
+    },
+),
+ExLocalVirtualFunction(
+    ExLocalVirtualFunction {
+        token: ExLocalVirtualFunction,
+        virtual_function_name: Backed {
+            value: "orig_ReceiveBeginPlay",
+            number: 0,
+            ty: Package,
+        },
+        parameters: [],
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Loop_Counter_Variable",
+                            number: 3,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExIntConst(
+            ExIntConst {
+                token: ExIntConst,
+                value: 0,
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Array_Index_Variable",
+                            number: 2,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Array_Index_Variable",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExIntConst(
+            ExIntConst {
+                token: ExIntConst,
+                value: 0,
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Array_Length_ReturnValue",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Length_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExContext(
+            ExContext {
+                token: ExContext,
+                object_expression: ExObjectConst(
+                    ExObjectConst {
+                        token: ExObjectConst,
+                        value: PackageIndex {
+                            index: -25,
+                        },
+                    },
+                ),
+                offset: 19,
+                r_value_pointer: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Array_Length_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+                context_expression: ExFinalFunction(
+                    ExFinalFunction {
+                        token: ExFinalFunction,
+                        stack_node: PackageIndex {
+                            index: -21,
+                        },
+                        parameters: [
+                            ExInstanceVariable(
+                                ExInstanceVariable {
+                                    token: ExInstanceVariable,
+                                    variable: KismetPropertyPointer {
+                                        old: None,
+                                        new: Some(
+                                            FieldPath {
+                                                path: [
+                                                    Backed {
+                                                        value: "hooks",
+                                                        number: 0,
+                                                        ty: Package,
+                                                    },
+                                                ],
+                                                resolved_owner: PackageIndex {
+                                                    index: 1,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                        ],
+                    },
+                ),
+            },
+        ),
+    },
+),
+ExLetBool(
+    ExLetBool {
+        token: ExLetBool,
+        variable_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Less_IntInt_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        assignment_expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -23,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Loop_Counter_Variable",
+                                                number: 3,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Length_ReturnValue",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExPopExecutionFlowIfNot(
+    ExPopExecutionFlowIfNot {
+        token: ExPopExecutionFlowIfNot,
+        boolean_expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Less_IntInt_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Array_Index_Variable",
+                            number: 2,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Array_Index_Variable",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExPushExecutionFlow(
+    ExPushExecutionFlow {
+        token: ExPushExecutionFlow,
+        pushing_address: 1249,
+    },
+),
+ExContext(
+    ExContext {
+        token: ExContext,
+        object_expression: ExObjectConst(
+            ExObjectConst {
+                token: ExObjectConst,
+                value: PackageIndex {
+                    index: -25,
+                },
+            },
+        ),
+        offset: 37,
+        r_value_pointer: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        context_expression: ExFinalFunction(
+            ExFinalFunction {
+                token: ExFinalFunction,
+                stack_node: PackageIndex {
+                    index: -20,
+                },
+                parameters: [
+                    ExInstanceVariable(
+                        ExInstanceVariable {
+                            token: ExInstanceVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "hooks",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 1,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Array_Index_Variable",
+                                                number: 2,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "CallFunc_Array_Get_Item",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExContext(
+    ExContext {
+        token: ExContext,
+        object_expression: ExInterfaceContext(
+            ExInterfaceContext {
+                token: ExInterfaceContext,
+                interface_value: ExLocalVariable(
+                    ExLocalVariable {
+                        token: ExLocalVariable,
+                        variable: KismetPropertyPointer {
+                            old: None,
+                            new: Some(
+                                FieldPath {
+                                    path: [
+                                        Backed {
+                                            value: "CallFunc_Array_Get_Item",
+                                            number: 0,
+                                            ty: Package,
+                                        },
+                                    ],
+                                    resolved_owner: PackageIndex {
+                                        index: 2,
+                                    },
+                                },
+                            ),
+                        },
+                    },
+                ),
+            },
+        ),
+        offset: 15,
+        r_value_pointer: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [],
+                    resolved_owner: PackageIndex {
+                        index: 0,
+                    },
+                },
+            ),
+        },
+        context_expression: ExLocalVirtualFunction(
+            ExLocalVirtualFunction {
+                token: ExLocalVirtualFunction,
+                virtual_function_name: Backed {
+                    value: "post_ReceiveBeginPlay",
+                    number: 0,
+                    ty: Package,
+                },
+                parameters: [
+                    ExSelf(
+                        ExSelf {
+                            token: ExSelf,
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExPopExecutionFlow(
+    ExPopExecutionFlow {
+        token: ExPopExecutionFlow,
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Add_IntInt_ReturnValue",
+                            number: 3,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Add_IntInt_ReturnValue",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -22,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Loop_Counter_Variable",
+                                                number: 3,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExIntConst(
+                        ExIntConst {
+                            token: ExIntConst,
+                            value: 1,
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Loop_Counter_Variable",
+                            number: 3,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Add_IntInt_ReturnValue",
+                                    number: 3,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExJump(
+    ExJump {
+        token: ExJump,
+        code_offset: 1012,
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Add_IntInt_ReturnValue",
+                            number: 2,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Add_IntInt_ReturnValue",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -22,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Loop_Counter_Variable",
+                                                number: 2,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExIntConst(
+                        ExIntConst {
+                            token: ExIntConst,
+                            value: 1,
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Loop_Counter_Variable",
+                            number: 2,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Add_IntInt_ReturnValue",
+                                    number: 2,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExJump(
+    ExJump {
+        token: ExJump,
+        code_offset: 290,
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "CallFunc_Add_IntInt_ReturnValue",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Add_IntInt_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExCallMath(
+            ExCallMath {
+                token: ExCallMath,
+                stack_node: PackageIndex {
+                    index: -22,
+                },
+                parameters: [
+                    ExLocalVariable(
+                        ExLocalVariable {
+                            token: ExLocalVariable,
+                            variable: KismetPropertyPointer {
+                                old: None,
+                                new: Some(
+                                    FieldPath {
+                                        path: [
+                                            Backed {
+                                                value: "Temp_int_Loop_Counter_Variable",
+                                                number: 0,
+                                                ty: Package,
+                                            },
+                                        ],
+                                        resolved_owner: PackageIndex {
+                                            index: 2,
+                                        },
+                                    },
+                                ),
+                            },
+                        },
+                    ),
+                    ExIntConst(
+                        ExIntConst {
+                            token: ExIntConst,
+                            value: 1,
+                        },
+                    ),
+                ],
+            },
+        ),
+    },
+),
+ExLet(
+    ExLet {
+        token: ExLet,
+        value: KismetPropertyPointer {
+            old: None,
+            new: Some(
+                FieldPath {
+                    path: [
+                        Backed {
+                            value: "Temp_int_Loop_Counter_Variable",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ],
+                    resolved_owner: PackageIndex {
+                        index: 2,
+                    },
+                },
+            ),
+        },
+        variable: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "Temp_int_Loop_Counter_Variable",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+        expression: ExLocalVariable(
+            ExLocalVariable {
+                token: ExLocalVariable,
+                variable: KismetPropertyPointer {
+                    old: None,
+                    new: Some(
+                        FieldPath {
+                            path: [
+                                Backed {
+                                    value: "CallFunc_Add_IntInt_ReturnValue",
+                                    number: 0,
+                                    ty: Package,
+                                },
+                            ],
+                            resolved_owner: PackageIndex {
+                                index: 2,
+                            },
+                        },
+                    ),
+                },
+            },
+        ),
+    },
+),
+ExJump(
+    ExJump {
+        token: ExJump,
+        code_offset: 711,
+    },
+),
+ExReturn(
+    ExReturn {
+        token: ExReturn,
+        return_expression: ExNothing(
+            ExNothing {
+                token: ExNothing,
+            },
+        ),
+    },
+),
+ExEndOfScript(
+    ExEndOfScript {
+        token: ExEndOfScript,
+    },
+),

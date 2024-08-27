@@ -68,6 +68,11 @@ fn main() {
         .exports
         .iter_mut()
         .enumerate()
+        .filter(|(_, ex)| {
+            !ex.get_base_export()
+                .object_name
+                .get_content(|name| name.starts_with("ExecuteUbergraph"))
+        })
         .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
         .map(|(i, func)| {
             let name = name_map.get_mut().add_fname(
@@ -87,7 +92,7 @@ fn main() {
         })
         .collect();
     // let insert = blueprint.asset_data.exports.len() as i32 + 1;
-    let bytecode = kismet::init(name_map.get_mut(), &mut blueprint);
+    let bytecode = kismet::init(name_map, &mut blueprint);
     let Some(class) = blueprint
         .asset_data
         .exports
@@ -100,7 +105,7 @@ fn main() {
     let Some(beginplay) = class
         .func_map
         .iter()
-        .find_map(|(_, key, val)| (key == "ReceiveBeginPlay").then(|| val.clone()))
+        .find_map(|(_, key, val)| (key == "ReceiveBeginPlay").then_some(*val))
     else {
         eprintln!("adding ReceiveBeginPlay currently isn't supported");
         std::process::exit(0)

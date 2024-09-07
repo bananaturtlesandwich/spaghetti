@@ -21,20 +21,21 @@ pub fn hook(
     let init = function.get_base_export().object_name == "ReceiveBeginPlay";
     macro_rules! import {
         ($import: expr) => {{
+            let import = $import;
             let import_ref = match blueprint
                 .imports
                 .iter()
                 .position(|imp| {
-                    imp.class_package.eq_content(&$import.class_package)
-                        && imp.class_name.eq_content(&$import.class_name)
-                        && imp.object_name.eq_content(&$import.object_name)
+                    imp.class_package.eq_content(&import.class_package)
+                        && imp.class_name.eq_content(&import.class_name)
+                        && imp.object_name.eq_content(&import.object_name)
                 })
                 .map(|i| Index::new(-(i as i32 + 1)))
             {
                 Some(i) => i,
                 None => {
                     let len = blueprint.imports.len();
-                    blueprint.imports.push($import);
+                    blueprint.imports.push(import);
                     Index::new(-(len as i32 + 1))
                 }
             };
@@ -59,12 +60,13 @@ pub fn hook(
     let obj = blueprint.asset_data.object_version_ue5;
     macro_rules! push {
         ($inst: expr) => {{
-            offset += size(&obj, &$inst);
-            stack.push($inst);
+            let inst = $inst;
+            offset += size(&obj, &inst);
+            stack.push(inst);
         }};
     }
     macro_rules! variable {
-        ($name: literal) => {{
+        ($name: expr) => {{
             Pointer::from_new(FieldPath::new(vec![name!($name)], this))
         }};
     }
@@ -665,7 +667,7 @@ pub fn hook(
     }));
     let pre_function = name!(&format!("pre_{function_name}"));
     for_loop!(
-        len.clone(),
+        len,
         vec![
             K::ExContext(ExContext {
                 token: T::ExContext,
@@ -731,7 +733,7 @@ pub fn hook(
     }));
     let post_function = name!(&format!("post_{function_name}"));
     for_loop!(
-        len.clone(),
+        len,
         vec![
             K::ExContext(ExContext {
                 token: T::ExContext,

@@ -43,11 +43,12 @@ fn main() {
     };
     // two loops for now so class gets dropped - need to another way and prevent the extra work
     for (i, (old, function)) in functions.iter().enumerate() {
+        let new = Index::new((insert + i) as i32 + 1);
         // replace old functions
-        class.func_map.insert(
-            function.get_base_export().object_name.clone(),
-            Index::new((insert + i) as i32 + 1),
-        );
+        class
+            .func_map
+            .insert(function.get_base_export().object_name.clone(), new);
+        class.struct_export.children.push(new);
         // add old functions to map
         class.func_map.insert(
             name_map.get_mut().add_fname(

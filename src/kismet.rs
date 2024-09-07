@@ -39,6 +39,7 @@ pub fn init(
     let hook_folder = "";
     let hook_path = "";
     let hook_name = "";
+    let function = "";
     // currently don't know how many instructions this'll be
     let mut stack = Vec::with_capacity(4);
     let mut offset = 0;
@@ -502,7 +503,7 @@ pub fn init(
                 ),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
-                    variable: hooks.clone(),
+                    variable: assets.clone(),
                 })],
             })),
         })),
@@ -545,7 +546,7 @@ pub fn init(
                 token: T::ExContext,
                 object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                     token: T::ExObjectConst,
-                    value: kismet_array_library,
+                    value: default_kismet_array_library,
                 })),
                 offset: 37,
                 r_value_pointer: null.clone(),
@@ -674,6 +675,172 @@ pub fn init(
             }),
         ]
     );
+    push!(K::ExLet(ExLet {
+        token: T::ExLet,
+        value: len.clone(),
+        variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+            token: T::ExLocalVariable,
+            variable: len.clone(),
+        })),
+        expression: Box::new(K::ExContext(ExContext {
+            token: T::ExContext,
+            object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                token: T::ExObjectConst,
+                value: default_kismet_array_library,
+            })),
+            offset: 19,
+            r_value_pointer: len.clone(),
+            context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                token: T::ExFinalFunction,
+                stack_node: get_or_insert(
+                    Import::new(
+                        coreuobject_name.clone(),
+                        function_name.clone(),
+                        kismet_array_library,
+                        name!("Array_Length"),
+                        false,
+                    ),
+                    &mut blueprint.imports,
+                ),
+                parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
+                    token: T::ExInstanceVariable,
+                    variable: hooks.clone(),
+                })],
+            })),
+        })),
+    }));
+    let pre_function = name!(&format!("pre_{function}"));
+    for_loop!(
+        len.clone(),
+        vec![
+            K::ExContext(ExContext {
+                token: T::ExContext,
+                object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                    token: T::ExObjectConst,
+                    value: default_kismet_array_library,
+                })),
+                offset: 37,
+                r_value_pointer: null.clone(),
+                context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                    token: T::ExFinalFunction,
+                    stack_node: get_or_insert(
+                        Import::new(
+                            coreuobject_name.clone(),
+                            function_name.clone(),
+                            kismet_array_library,
+                            name!("Array_Get"),
+                            false,
+                        ),
+                        &mut blueprint.imports,
+                    ),
+                    parameters: vec![
+                        K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: hooks.clone(),
+                        }),
+                        K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: counter.clone(),
+                        }),
+                        K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: item.clone(),
+                        }),
+                    ],
+                })),
+            }),
+            K::ExContext(ExContext {
+                token: T::ExContext,
+                object_expression: Box::new(K::ExInterfaceContext(ExInterfaceContext {
+                    token: T::ExInterfaceContext,
+                    interface_value: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: item.clone(),
+                    })),
+                })),
+                offset: 15,
+                r_value_pointer: null.clone(),
+                context_expression: Box::new(K::ExLocalVirtualFunction(ExLocalVirtualFunction {
+                    token: T::ExLocalVirtualFunction,
+                    virtual_function_name: pre_function.clone(),
+                    parameters: vec![
+                        K::ExSelf(ExSelf { token: T::ExSelf }),
+                        // other params
+                    ]
+                }))
+            })
+        ]
+    );
+    push!(K::ExLocalVirtualFunction(ExLocalVirtualFunction {
+        token: T::ExLocalVirtualFunction,
+        virtual_function_name: name!(&format!("orig_{function}")),
+        parameters: vec![
+            // other params
+        ]
+    }));
+    let post_function = name!(&format!("post_{function}"));
+    for_loop!(
+        len.clone(),
+        vec![
+            K::ExContext(ExContext {
+                token: T::ExContext,
+                object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                    token: T::ExObjectConst,
+                    value: default_kismet_array_library,
+                })),
+                offset: 37,
+                r_value_pointer: null.clone(),
+                context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                    token: T::ExFinalFunction,
+                    stack_node: get_or_insert(
+                        Import::new(
+                            coreuobject_name.clone(),
+                            function_name.clone(),
+                            kismet_array_library,
+                            name!("Array_Get"),
+                            false,
+                        ),
+                        &mut blueprint.imports,
+                    ),
+                    parameters: vec![
+                        K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: hooks.clone(),
+                        }),
+                        K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: counter.clone(),
+                        }),
+                        K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: item.clone(),
+                        }),
+                    ],
+                })),
+            }),
+            K::ExContext(ExContext {
+                token: T::ExContext,
+                object_expression: Box::new(K::ExInterfaceContext(ExInterfaceContext {
+                    token: T::ExInterfaceContext,
+                    interface_value: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: item.clone(),
+                    })),
+                })),
+                offset: 15,
+                r_value_pointer: null.clone(),
+                context_expression: Box::new(K::ExLocalVirtualFunction(ExLocalVirtualFunction {
+                    token: T::ExLocalVirtualFunction,
+                    virtual_function_name: post_function.clone(),
+                    parameters: vec![
+                        K::ExSelf(ExSelf { token: T::ExSelf }),
+                        // other params
+                    ]
+                }))
+            })
+        ]
+    );
+    // to suppress warnings about not using offset
     let _ = offset;
     stack
 }

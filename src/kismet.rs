@@ -148,6 +148,7 @@ pub fn hook(
         std::process::exit(0);
     };
     let class_import_name = name!("Class");
+    let function_import_name = name!("Function");
     let script_registry = import!(Import::new(
         coreuobject_import_name.clone(),
         package_import_name.clone(),
@@ -181,7 +182,6 @@ pub fn hook(
         }),
         registry_name
     );
-    let function_import_name = name!("Function");
     let get_asset_registry = K::ExLet(ExLet {
         token: T::ExLet,
         value: registry.clone(),
@@ -201,7 +201,9 @@ pub fn hook(
             parameters: vec![],
         })),
     });
-    push!(get_asset_registry.clone());
+    if init {
+        push!(get_asset_registry.clone())
+    }
     let hook_folder_arr_name = name!("K2Node_MakeArray_Array");
     let hook_folder_arr = local!(
         FProperty::FArrayProperty(FArrayProperty {
@@ -231,45 +233,47 @@ pub fn hook(
         hook_folder_arr_name
     );
     // create local array for ScanPathsSynchronous
-    push!(K::ExSetArray(ExSetArray {
-        token: T::ExSetArray,
-        assigning_property: Some(Box::new(K::ExLocalVariable(ExLocalVariable {
-            token: T::ExLocalVariable,
-            variable: hook_folder_arr.clone(),
-        }))),
-        array_inner_prop: None,
-        elements: vec![K::ExStringConst(ExStringConst {
-            token: T::ExLocalVariable,
-            value: hook_folder.into(),
-        })],
-    }));
-    // call ScanPathsSynchronous on the asset registry interface
-    push!(K::ExContext(ExContext {
-        token: T::ExContext,
-        object_expression: Box::new(K::ExInterfaceContext(ExInterfaceContext {
-            token: T::ExInterfaceContext,
-            interface_value: Box::new(K::ExLocalVariable(ExLocalVariable {
+    if init {
+        push!(K::ExSetArray(ExSetArray {
+            token: T::ExSetArray,
+            assigning_property: Some(Box::new(K::ExLocalVariable(ExLocalVariable {
                 token: T::ExLocalVariable,
-                variable: registry.clone(),
-            })),
-        })),
-        offset: 25,
-        r_value_pointer: null.clone(),
-        context_expression: Box::new(K::ExVirtualFunction(ExVirtualFunction {
-            token: T::ExVirtualFunction,
-            virtual_function_name: name!("ScanPathsSynchronous"),
-            parameters: vec![
-                K::ExLocalVariable(ExLocalVariable {
+                variable: hook_folder_arr.clone(),
+            }))),
+            array_inner_prop: None,
+            elements: vec![K::ExStringConst(ExStringConst {
+                token: T::ExLocalVariable,
+                value: hook_folder.into(),
+            })],
+        }));
+        // call ScanPathsSynchronous on the asset registry interface
+        push!(K::ExContext(ExContext {
+            token: T::ExContext,
+            object_expression: Box::new(K::ExInterfaceContext(ExInterfaceContext {
+                token: T::ExInterfaceContext,
+                interface_value: Box::new(K::ExLocalVariable(ExLocalVariable {
                     token: T::ExLocalVariable,
-                    variable: hook_folder_arr.clone(),
-                }),
-                K::ExTrue(ExTrue { token: T::ExTrue }),
-                K::ExFalse(ExFalse { token: T::ExFalse }),
-            ],
-        })),
-    }));
-    // refresh our registry since paths were just scanned
-    push!(get_asset_registry);
+                    variable: registry.clone(),
+                })),
+            })),
+            offset: 25,
+            r_value_pointer: null.clone(),
+            context_expression: Box::new(K::ExVirtualFunction(ExVirtualFunction {
+                token: T::ExVirtualFunction,
+                virtual_function_name: name!("ScanPathsSynchronous"),
+                parameters: vec![
+                    K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: hook_folder_arr.clone(),
+                    }),
+                    K::ExTrue(ExTrue { token: T::ExTrue }),
+                    K::ExFalse(ExFalse { token: T::ExFalse }),
+                ],
+            })),
+        }));
+        // refresh our registry since paths were just scanned
+        push!(get_asset_registry);
+    }
     let coreuobject = import!(Import::new(
         coreuobject_import_name.clone(),
         package_import_name.clone(),
@@ -317,15 +321,17 @@ pub fn hook(
         },),
         assets_name
     );
-    push!(K::ExSetArray(ExSetArray {
-        token: T::ExSetArray,
-        assigning_property: Some(Box::new(K::ExLocalVariable(ExLocalVariable {
-            token: T::ExLocalVariable,
-            variable: assets.clone(),
-        }))),
-        array_inner_prop: None,
-        elements: vec![],
-    }));
+    if init {
+        push!(K::ExSetArray(ExSetArray {
+            token: T::ExSetArray,
+            assigning_property: Some(Box::new(K::ExLocalVariable(ExLocalVariable {
+                token: T::ExLocalVariable,
+                variable: assets.clone(),
+            }))),
+            array_inner_prop: None,
+            elements: vec![],
+        }));
+    }
     // return value isn't used so probably doesn't need to be set
 
     let int_property_type = Some(name!("IntProperty"));
@@ -413,37 +419,39 @@ pub fn hook(
         false,
     ));
     let hooks = Pointer::from_new(FieldPath::new(vec![hooks_name.clone()], class));
-    push!(K::ExLet(ExLet {
-        token: T::ExLet,
-        value: len.clone(),
-        variable: Box::new(K::ExLocalVariable(ExLocalVariable {
-            token: T::ExLocalVariable,
-            variable: len.clone(),
-        })),
-        expression: Box::new(K::ExContext(ExContext {
-            token: T::ExContext,
-            object_expression: Box::new(K::ExObjectConst(ExObjectConst {
-                token: T::ExObjectConst,
-                value: default_array_lib,
+    if init {
+        push!(K::ExLet(ExLet {
+            token: T::ExLet,
+            value: len.clone(),
+            variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+                token: T::ExLocalVariable,
+                variable: len.clone(),
             })),
-            offset: 19,
-            r_value_pointer: len.clone(),
-            context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
-                token: T::ExFinalFunction,
-                stack_node: import!(Import::new(
-                    coreuobject_import_name.clone(),
-                    function_import_name.clone(),
-                    array_lib,
-                    name!("Array_Length"),
-                    false,
-                )),
-                parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
-                    token: T::ExInstanceVariable,
-                    variable: hooks.clone(),
-                })],
+            expression: Box::new(K::ExContext(ExContext {
+                token: T::ExContext,
+                object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                    token: T::ExObjectConst,
+                    value: default_array_lib,
+                })),
+                offset: 19,
+                r_value_pointer: len.clone(),
+                context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                    token: T::ExFinalFunction,
+                    stack_node: import!(Import::new(
+                        coreuobject_import_name.clone(),
+                        function_import_name.clone(),
+                        array_lib,
+                        name!("Array_Length"),
+                        false,
+                    )),
+                    parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
+                        token: T::ExInstanceVariable,
+                        variable: hooks.clone(),
+                    })],
+                })),
             })),
-        })),
-    }));
+        }));
+    }
     let incremented_name = name!("CallFunc_Add_IntInt_ReturnValue");
     let incremented = local!(
         FProperty::FGenericProperty(FGenericProperty {
@@ -583,37 +591,39 @@ pub fn hook(
             push!(jump);
         }};
     }
-    push!(K::ExLet(ExLet {
-        token: T::ExLet,
-        value: len.clone(),
-        variable: Box::new(K::ExLocalVariable(ExLocalVariable {
-            token: T::ExLocalVariable,
-            variable: len.clone(),
-        })),
-        expression: Box::new(K::ExContext(ExContext {
-            token: T::ExContext,
-            object_expression: Box::new(K::ExObjectConst(ExObjectConst {
-                token: T::ExObjectConst,
-                value: default_array_lib,
+    if init {
+        push!(K::ExLet(ExLet {
+            token: T::ExLet,
+            value: len.clone(),
+            variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+                token: T::ExLocalVariable,
+                variable: len.clone(),
             })),
-            offset: 19,
-            r_value_pointer: len.clone(),
-            context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
-                token: T::ExFinalFunction,
-                stack_node: import!(Import::new(
-                    coreuobject_import_name.clone(),
-                    function_import_name.clone(),
-                    array_lib,
-                    name!("Array_Length"),
-                    false,
-                )),
-                parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
-                    token: T::ExInstanceVariable,
-                    variable: assets.clone(),
-                })],
+            expression: Box::new(K::ExContext(ExContext {
+                token: T::ExContext,
+                object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                    token: T::ExObjectConst,
+                    value: default_array_lib,
+                })),
+                offset: 19,
+                r_value_pointer: len.clone(),
+                context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                    token: T::ExFinalFunction,
+                    stack_node: import!(Import::new(
+                        coreuobject_import_name.clone(),
+                        function_import_name.clone(),
+                        array_lib,
+                        name!("Array_Length"),
+                        false,
+                    )),
+                    parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
+                        token: T::ExInstanceVariable,
+                        variable: assets.clone(),
+                    })],
+                })),
             })),
-        })),
-    }));
+        }));
+    }
     let item_name = name!("CallFunc_Array_Get_Item");
     let item = local!(
         FProperty::FInterfaceProperty(FInterfaceProperty {
@@ -721,167 +731,169 @@ pub fn hook(
         name!("Array_Add"),
         false,
     ));
-    for_loop!(
-        len,
-        vec![
-            K::ExContext(ExContext {
+    if init {
+        for_loop!(
+            len,
+            vec![
+                K::ExContext(ExContext {
+                    token: T::ExContext,
+                    object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                        token: T::ExObjectConst,
+                        value: default_array_lib,
+                    })),
+                    offset: 37,
+                    r_value_pointer: null.clone(),
+                    context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                        token: T::ExFinalFunction,
+                        stack_node: import!(Import::new(
+                            coreuobject_import_name.clone(),
+                            function_import_name.clone(),
+                            array_lib,
+                            name!("Array_Get"),
+                            false,
+                        )),
+                        parameters: vec![
+                            K::ExLocalVariable(ExLocalVariable {
+                                token: T::ExLocalVariable,
+                                variable: assets.clone(),
+                            }),
+                            K::ExLocalVariable(ExLocalVariable {
+                                token: T::ExLocalVariable,
+                                variable: counter.clone(),
+                            }),
+                            K::ExLocalVariable(ExLocalVariable {
+                                token: T::ExLocalVariable,
+                                variable: item.clone(),
+                            }),
+                        ],
+                    })),
+                }),
+                K::ExLetObj(ExLetObj {
+                    token: T::ExLetObj,
+                    variable_expression: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: asset.clone(),
+                    })),
+                    assignment_expression: Box::new(K::ExCallMath(ExCallMath {
+                        token: T::ExCallMath,
+                        stack_node: import!(Import::new(
+                            coreuobject_import_name.clone(),
+                            function_import_name.clone(),
+                            registry_helpers,
+                            get_asset_name.clone(),
+                            false,
+                        )),
+                        parameters: vec![K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: item.clone(),
+                        })],
+                    })),
+                }),
+                K::ExLet(ExLet {
+                    token: T::ExLet,
+                    value: null.clone(),
+                    variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: cast.clone(),
+                    })),
+                    expression: Box::new(K::ExObjToInterfaceCast(ExObjToInterfaceCast {
+                        token: T::ExObjToInterfaceCast,
+                        class_ptr: hook_interface,
+                        target: Box::new(K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: asset.clone(),
+                        }))
+                    })),
+                }),
+                K::ExLet(ExLet {
+                    token: T::ExLet,
+                    value: null.clone(),
+                    variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: cast_success.clone(),
+                    })),
+                    expression: Box::new(K::ExPrimitiveCast(ExPrimitiveCast {
+                        token: T::ExPrimitiveCast,
+                        // need to change this for lower versions
+                        conversion_type: ECastToken::InterfaceToBool2,
+                        target: Box::new(K::ExLocalVariable(ExLocalVariable {
+                            token: T::ExLocalVariable,
+                            variable: cast.clone(),
+                        }))
+                    })),
+                }),
+                K::ExPopExecutionFlowIfNot(ExPopExecutionFlowIfNot {
+                    token: T::ExPopExecutionFlowIfNot,
+                    boolean_expression: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: cast_success.clone(),
+                    }))
+                }),
+                K::ExLet(ExLet {
+                    token: T::ExLet,
+                    value: array_added.clone(),
+                    variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+                        token: T::ExLocalVariable,
+                        variable: array_added.clone(),
+                    })),
+                    expression: Box::new(K::ExContext(ExContext {
+                        token: T::ExContext,
+                        object_expression: Box::new(K::ExObjectConst(ExObjectConst {
+                            token: T::ExObjectConst,
+                            value: default_array_lib
+                        })),
+                        offset: 28,
+                        r_value_pointer: array_added.clone(),
+                        context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
+                            token: T::ExFinalFunction,
+                            stack_node: array_add,
+                            parameters: vec![
+                                K::ExInstanceVariable(ExInstanceVariable {
+                                    token: T::ExInstanceVariable,
+                                    variable: hooks.clone()
+                                }),
+                                K::ExLocalVariable(ExLocalVariable {
+                                    token: T::ExLocalVariable,
+                                    variable: cast.clone()
+                                })
+                            ]
+                        }))
+                    }))
+                }),
+            ]
+        );
+        push!(K::ExLet(ExLet {
+            token: T::ExLet,
+            value: len.clone(),
+            variable: Box::new(K::ExLocalVariable(ExLocalVariable {
+                token: T::ExLocalVariable,
+                variable: len.clone(),
+            })),
+            expression: Box::new(K::ExContext(ExContext {
                 token: T::ExContext,
                 object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                     token: T::ExObjectConst,
                     value: default_array_lib,
                 })),
-                offset: 37,
-                r_value_pointer: null.clone(),
+                offset: 19,
+                r_value_pointer: len.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
                     stack_node: import!(Import::new(
                         coreuobject_import_name.clone(),
                         function_import_name.clone(),
                         array_lib,
-                        name!("Array_Get"),
+                        name!("Array_Length"),
                         false,
                     )),
-                    parameters: vec![
-                        K::ExLocalVariable(ExLocalVariable {
-                            token: T::ExLocalVariable,
-                            variable: assets.clone(),
-                        }),
-                        K::ExLocalVariable(ExLocalVariable {
-                            token: T::ExLocalVariable,
-                            variable: counter.clone(),
-                        }),
-                        K::ExLocalVariable(ExLocalVariable {
-                            token: T::ExLocalVariable,
-                            variable: item.clone(),
-                        }),
-                    ],
-                })),
-            }),
-            K::ExLetObj(ExLetObj {
-                token: T::ExLetObj,
-                variable_expression: Box::new(K::ExLocalVariable(ExLocalVariable {
-                    token: T::ExLocalVariable,
-                    variable: asset.clone(),
-                })),
-                assignment_expression: Box::new(K::ExCallMath(ExCallMath {
-                    token: T::ExCallMath,
-                    stack_node: import!(Import::new(
-                        coreuobject_import_name.clone(),
-                        function_import_name.clone(),
-                        registry_helpers,
-                        get_asset_name.clone(),
-                        false,
-                    )),
-                    parameters: vec![K::ExLocalVariable(ExLocalVariable {
-                        token: T::ExLocalVariable,
-                        variable: item.clone(),
+                    parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
+                        token: T::ExInstanceVariable,
+                        variable: hooks.clone(),
                     })],
                 })),
-            }),
-            K::ExLet(ExLet {
-                token: T::ExLet,
-                value: null.clone(),
-                variable: Box::new(K::ExLocalVariable(ExLocalVariable {
-                    token: T::ExLocalVariable,
-                    variable: cast.clone(),
-                })),
-                expression: Box::new(K::ExObjToInterfaceCast(ExObjToInterfaceCast {
-                    token: T::ExObjToInterfaceCast,
-                    class_ptr: hook_interface,
-                    target: Box::new(K::ExLocalVariable(ExLocalVariable {
-                        token: T::ExLocalVariable,
-                        variable: asset.clone(),
-                    }))
-                })),
-            }),
-            K::ExLet(ExLet {
-                token: T::ExLet,
-                value: null.clone(),
-                variable: Box::new(K::ExLocalVariable(ExLocalVariable {
-                    token: T::ExLocalVariable,
-                    variable: cast_success.clone(),
-                })),
-                expression: Box::new(K::ExPrimitiveCast(ExPrimitiveCast {
-                    token: T::ExPrimitiveCast,
-                    // need to change this for lower versions
-                    conversion_type: ECastToken::InterfaceToBool2,
-                    target: Box::new(K::ExLocalVariable(ExLocalVariable {
-                        token: T::ExLocalVariable,
-                        variable: cast.clone(),
-                    }))
-                })),
-            }),
-            K::ExPopExecutionFlowIfNot(ExPopExecutionFlowIfNot {
-                token: T::ExPopExecutionFlowIfNot,
-                boolean_expression: Box::new(K::ExLocalVariable(ExLocalVariable {
-                    token: T::ExLocalVariable,
-                    variable: cast_success.clone(),
-                }))
-            }),
-            K::ExLet(ExLet {
-                token: T::ExLet,
-                value: array_added.clone(),
-                variable: Box::new(K::ExLocalVariable(ExLocalVariable {
-                    token: T::ExLocalVariable,
-                    variable: array_added.clone(),
-                })),
-                expression: Box::new(K::ExContext(ExContext {
-                    token: T::ExContext,
-                    object_expression: Box::new(K::ExObjectConst(ExObjectConst {
-                        token: T::ExObjectConst,
-                        value: default_array_lib
-                    })),
-                    offset: 28,
-                    r_value_pointer: array_added.clone(),
-                    context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
-                        token: T::ExFinalFunction,
-                        stack_node: array_add,
-                        parameters: vec![
-                            K::ExInstanceVariable(ExInstanceVariable {
-                                token: T::ExInstanceVariable,
-                                variable: hooks.clone()
-                            }),
-                            K::ExLocalVariable(ExLocalVariable {
-                                token: T::ExLocalVariable,
-                                variable: cast.clone()
-                            })
-                        ]
-                    }))
-                }))
-            }),
-        ]
-    );
-    push!(K::ExLet(ExLet {
-        token: T::ExLet,
-        value: len.clone(),
-        variable: Box::new(K::ExLocalVariable(ExLocalVariable {
-            token: T::ExLocalVariable,
-            variable: len.clone(),
-        })),
-        expression: Box::new(K::ExContext(ExContext {
-            token: T::ExContext,
-            object_expression: Box::new(K::ExObjectConst(ExObjectConst {
-                token: T::ExObjectConst,
-                value: default_array_lib,
             })),
-            offset: 19,
-            r_value_pointer: len.clone(),
-            context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
-                token: T::ExFinalFunction,
-                stack_node: import!(Import::new(
-                    coreuobject_import_name.clone(),
-                    function_import_name.clone(),
-                    array_lib,
-                    name!("Array_Length"),
-                    false,
-                )),
-                parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
-                    token: T::ExInstanceVariable,
-                    variable: hooks.clone(),
-                })],
-            })),
-        })),
-    }));
+        }));
+    }
     let pre_function = name!(&format!("pre_{function_name}"));
     for_loop!(
         len,

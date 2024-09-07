@@ -99,6 +99,8 @@ fn args() -> (
         orig: orig_path,
         mut output,
         version,
+        hooks_folder,
+        hook_path,
     } = cli::Cli::parse();
     let ignored = orig_path.is_none();
     let orig_path = orig_path.unwrap_or_else(|| {
@@ -149,7 +151,13 @@ fn args() -> (
         eprintln!("{e}");
         std::process::exit(0);
     });
-    let hook_folder = get("folder where the hooks are e.g /Game/BP_PlayerGoatMain: ");
-    let hook_path = get("location of the hook interface e.g /Game/BP_PlayerGoatMain_hooks: ");
+    let hook_folder = match hooks_folder {
+        Some(folder) => folder,
+        None => get("folder where the hooks are e.g /Game/BP_PlayerGoatMain/: "),
+    };
+    let hook_path = match hook_path {
+        Some(path) => path,
+        None => get("location of the hook interface e.g /Game/BP_PlayerGoatMain_hooks: "),
+    };
     (orig_path, output, blueprint, hook_folder, hook_path)
 }

@@ -12,6 +12,12 @@ pub struct Cli {
     /// path to save the hooked blueprint to [default: overwrites original]
     #[arg(short, value_name = "output path")]
     pub output: Option<std::path::PathBuf>,
+    /// folder where the hooks are e.g /Game/BP_PlayerGoatMain/
+    #[arg(short = 'f', value_name = "hooks folder")]
+    pub hooks_folder: Option<String>,
+    /// location of the hook interface e.g /Game/BP_PlayerGoatMain_hooks
+    #[arg(short = 'p', value_name = "hook path")]
+    pub hook_path: Option<String>,
 }
 
 #[derive(Clone)]

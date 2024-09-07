@@ -13,17 +13,46 @@ pub fn hook(
     name_map: &mut unreal_asset::containers::SharedResource<unreal_asset::containers::NameMap>,
     blueprint: &mut unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
 ) -> Vec<K> {
-    let init = function.get_base_export().object_name == "ReceiveBeginPlay";
-    macro_rules! name {
-        ($name: expr) => {
-            name_map.get_mut().add_fname($name)
-        };
-    }
     // do this later
     let hook_folder = "";
     let hook_path = "";
     let hook_name = "";
     let function_name = "";
+    let init = function.get_base_export().object_name == "ReceiveBeginPlay";
+    macro_rules! import {
+        ($import: expr) => {{
+            let import_ref = match blueprint
+                .imports
+                .iter()
+                .position(|imp| {
+                    imp.class_package.eq_content(&$import.class_package)
+                        && imp.class_name.eq_content(&$import.class_name)
+                        && imp.object_name.eq_content(&$import.object_name)
+                })
+                .map(|i| Index::new(-(i as i32 + 1)))
+            {
+                Some(i) => i,
+                None => {
+                    let len = blueprint.imports.len();
+                    blueprint.imports.push($import);
+                    Index::new(-(len as i32 + 1))
+                }
+            };
+            // add to create before serialisation deps
+            let deps = &mut function
+                .get_base_export_mut()
+                .create_before_serialization_dependencies;
+            if !deps.contains(&import_ref) {
+                deps.push(import_ref)
+            }
+            import_ref
+        }};
+    }
+    macro_rules! name {
+        ($name: expr) => {
+            name_map.get_mut().add_fname($name)
+        };
+    }
     // currently don't know how many instructions this'll be
     let mut stack = vec![];
     let mut offset = 0;
@@ -34,37 +63,15 @@ pub fn hook(
             stack.push($inst);
         }};
     }
-    let mut get_or_insert = |import: Import| -> Index {
-        let import_ref = match blueprint
-            .imports
-            .iter()
-            .position(|imp| {
-                imp.class_package.eq_content(&import.class_package)
-                    && imp.class_name.eq_content(&import.class_name)
-                    && imp.object_name.eq_content(&import.object_name)
-            })
-            .map(|i| Index::new(-(i as i32 + 1)))
-        {
-            Some(i) => i,
-            None => {
-                let len = blueprint.imports.len();
-                blueprint.imports.push(import);
-                Index::new(-(len as i32 + 1))
-            }
-        };
-        // add to create before serialisation deps
-        let deps = &mut function
-            .get_base_export_mut()
-            .create_before_serialization_dependencies;
-        if !deps.contains(&import_ref) {
-            deps.push(import_ref)
-        }
-        import_ref
-    };
+    macro_rules! variable {
+        ($name: literal) => {{
+            Pointer::from_new(FieldPath::new(vec![name!($name)], this))
+        }};
+    }
     let null = Pointer::from_new(FieldPath::new(vec![], Index::new(0)));
     let coreuobject_import_name = name!("/Script/CoreUObject");
     let package_import_name = name!("Package");
-    let script_hook_interface = get_or_insert(Import::new(
+    let script_hook_interface = import!(Import::new(
         coreuobject_import_name.clone(),
         package_import_name.clone(),
         Index::new(0),
@@ -73,7 +80,7 @@ pub fn hook(
     ));
     let engine_import_name = name!("/Script/Engine");
     let blueprint_generated_class_name = name!("BlueprintGeneratedClass");
-    let hook_interface = get_or_insert(Import::new(
+    let hook_interface = import!(Import::new(
         engine_import_name.clone(),
         blueprint_generated_class_name.clone(),
         script_hook_interface,
@@ -134,18 +141,18 @@ pub fn hook(
         })
         .map(|i| Index::new(i as i32 + 1))
     else {
-        eprintln!("couldn't find ubergraph");
+        eprintln!("couldn't find class export");
         std::process::exit(0);
     };
     let class_import_name = name!("Class");
-    let script_registry = get_or_insert(Import::new(
+    let script_registry = import!(Import::new(
         coreuobject_import_name.clone(),
         package_import_name.clone(),
         Index::new(0),
         name!("/Script/AssetRegistry"),
         false,
     ));
-    let registry_helpers = get_or_insert(Import::new(
+    let registry_helpers = import!(Import::new(
         coreuobject_import_name.clone(),
         class_import_name.clone(),
         script_registry,
@@ -167,7 +174,7 @@ pub fn hook(
         })),
         expression: Box::new(K::ExCallMath(ExCallMath {
             token: T::ExCallMath,
-            stack_node: get_or_insert(Import::new(
+            stack_node: import!(Import::new(
                 coreuobject_import_name.clone(),
                 function_import_name.clone(),
                 registry_helpers,
@@ -246,14 +253,14 @@ pub fn hook(
         vec![name!("CallFunc_Array_Length_ReturnValue")],
         this,
     ));
-    let script_engine = get_or_insert(Import::new(
+    let script_engine = import!(Import::new(
         coreuobject_import_name.clone(),
         package_import_name.clone(),
         Index::new(0),
         engine_import_name.clone(),
         false,
     ));
-    let math_lib = get_or_insert(Import::new(
+    let math_lib = import!(Import::new(
         coreuobject_import_name.clone(),
         class_import_name.clone(),
         script_engine,
@@ -261,14 +268,14 @@ pub fn hook(
         false,
     ));
     let array_lib_import_name = name!("KismetArrayLibrary");
-    let default_array_lib = get_or_insert(Import::new(
+    let default_array_lib = import!(Import::new(
         engine_import_name.clone(),
         array_lib_import_name.clone(),
         script_engine,
         name!("Default__KismetArrayLibrary"),
         false,
     ));
-    let array_lib = get_or_insert(Import::new(
+    let array_lib = import!(Import::new(
         coreuobject_import_name.clone(),
         class_import_name.clone(),
         script_engine,
@@ -293,13 +300,13 @@ pub fn hook(
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
-                stack_node: get_or_insert(Import::new(
+                stack_node: import!(Import::new(
                     coreuobject_import_name.clone(),
                     function_import_name.clone(),
                     array_lib,
                     name!("Array_Length"),
                     false,
-                ),),
+                )),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
                     variable: hooks.clone(),
@@ -336,14 +343,14 @@ pub fn hook(
                 })),
                 assignment_expression: Box::new(K::ExCallMath(ExCallMath {
                     token: T::ExCallMath,
-                    stack_node: get_or_insert(
+                    stack_node: import!(
                         Import::new(
                             coreuobject_import_name.clone(),
                             function_import_name.clone(),
                             math_lib,
                             name!("Less_IntInt"),
                             false,
-                        ),
+                        )
                     ),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
@@ -369,14 +376,14 @@ pub fn hook(
                 })),
                 expression: Box::new(K::ExCallMath(ExCallMath {
                     token: T::ExCallMath,
-                    stack_node: get_or_insert(
+                    stack_node: import!(
                         Import::new(
                             coreuobject_import_name.clone(),
                             function_import_name.clone(),
                             math_lib,
                             name!("Add_IntInt"),
                             false,
-                        ),
+                        )
                     ),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
@@ -456,13 +463,13 @@ pub fn hook(
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
-                stack_node: get_or_insert(Import::new(
+                stack_node: import!(Import::new(
                     coreuobject_import_name.clone(),
                     function_import_name.clone(),
                     array_lib,
                     name!("Array_Length"),
                     false,
-                ),),
+                )),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
                     variable: assets.clone(),
@@ -488,7 +495,7 @@ pub fn hook(
         vec![name!("CallFunc_Array_Add_ReturnValue")],
         this,
     ));
-    let array_add = get_or_insert(Import::new(
+    let array_add = import!(Import::new(
         coreuobject_import_name.clone(),
         function_import_name.clone(),
         array_lib,
@@ -508,13 +515,13 @@ pub fn hook(
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
-                    stack_node: get_or_insert(Import::new(
+                    stack_node: import!(Import::new(
                         coreuobject_import_name.clone(),
                         function_import_name.clone(),
                         array_lib,
                         name!("Array_Get"),
                         false,
-                    ),),
+                    )),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
                             token: T::ExLocalVariable,
@@ -539,13 +546,13 @@ pub fn hook(
                 })),
                 assignment_expression: Box::new(K::ExCallMath(ExCallMath {
                     token: T::ExCallMath,
-                    stack_node: get_or_insert(Import::new(
+                    stack_node: import!(Import::new(
                         coreuobject_import_name.clone(),
                         function_import_name.clone(),
                         registry_helpers,
                         get_asset_name.clone(),
                         false,
-                    ),),
+                    )),
                     parameters: vec![K::ExLocalVariable(ExLocalVariable {
                         token: T::ExLocalVariable,
                         variable: item.clone(),
@@ -642,13 +649,13 @@ pub fn hook(
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
-                stack_node: get_or_insert(Import::new(
+                stack_node: import!(Import::new(
                     coreuobject_import_name.clone(),
                     function_import_name.clone(),
                     array_lib,
                     name!("Array_Length"),
                     false,
-                ),),
+                )),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
                     variable: hooks.clone(),
@@ -670,13 +677,13 @@ pub fn hook(
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
-                    stack_node: get_or_insert(Import::new(
+                    stack_node: import!(Import::new(
                         coreuobject_import_name.clone(),
                         function_import_name.clone(),
                         array_lib,
                         name!("Array_Get"),
                         false,
-                    ),),
+                    )),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
                             token: T::ExLocalVariable,
@@ -736,13 +743,13 @@ pub fn hook(
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
-                    stack_node: get_or_insert(Import::new(
+                    stack_node: import!(Import::new(
                         coreuobject_import_name.clone(),
                         function_import_name.clone(),
                         array_lib,
                         name!("Array_Get"),
                         false,
-                    ),),
+                    )),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
                             token: T::ExLocalVariable,

@@ -36,7 +36,7 @@ fn main() {
         eprintln!("class export couldn't be found");
         std::process::exit(0)
     };
-    // two loops so class gets dropped
+    // two loops for now so class gets dropped
     for (i, (_, function)) in functions.iter().enumerate() {
         // replace old functions
         class.func_map.insert(
@@ -44,7 +44,7 @@ fn main() {
             unreal_asset::types::PackageIndex::new((insert + i) as i32 + 1),
         );
     }
-    for (old, mut function) in functions {
+    for (new, (old, mut function)) in functions.into_iter().enumerate() {
         // duplication is super simple for functions since they have no export refs
         let name = &mut blueprint.asset_data.exports[old]
             .get_base_export_mut()
@@ -53,7 +53,12 @@ fn main() {
         *name = name_map
             .get_mut()
             .add_fname(&name.get_content(|name| format!("orig_{name}")));
-        kismet::hook(&mut function, &mut name_map, &mut blueprint);
+        kismet::hook(
+            &mut function,
+            unreal_asset::types::PackageIndex::new((insert + new) as i32 + 1),
+            &mut name_map,
+            &mut blueprint,
+        );
         blueprint
             .asset_data
             .exports

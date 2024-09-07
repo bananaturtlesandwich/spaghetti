@@ -6,32 +6,14 @@ use EExprToken as T;
 use KismetExpression as K;
 use KismetPropertyPointer as Pointer;
 
-// need to add to create before serialisation deps
-fn get_or_insert(import: Import, imports: &mut Vec<Import>) -> Index {
-    match imports
-        .iter()
-        .position(|imp| {
-            imp.class_package.eq_content(&import.class_package)
-                && imp.class_name.eq_content(&import.class_name)
-                && imp.object_name.eq_content(&import.object_name)
-        })
-        .map(|i| Index::new(-(i as i32 + 1)))
-    {
-        Some(i) => i,
-        None => {
-            let len = imports.len();
-            imports.push(import);
-            Index::new(-(len as i32 + 1))
-        }
-    }
-}
-
 // need to add local variables to the loaded properties
 pub fn hook(
     function: &mut unreal_asset::exports::FunctionExport<Index>,
+    this: Index,
     name_map: &mut unreal_asset::containers::SharedResource<unreal_asset::containers::NameMap>,
     blueprint: &mut unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
 ) -> Vec<K> {
+    let init = function.get_base_export().object_name == "ReceiveBeginPlay";
     macro_rules! name {
         ($name: expr) => {
             name_map.get_mut().add_fname($name)
@@ -43,7 +25,7 @@ pub fn hook(
     let hook_name = "";
     let function = "";
     // currently don't know how many instructions this'll be
-    let mut stack = Vec::with_capacity(4);
+    let mut stack = vec![];
     let mut offset = 0;
     let obj = blueprint.asset_data.object_version_ue5;
     macro_rules! push {
@@ -52,46 +34,45 @@ pub fn hook(
             stack.push($inst);
         }};
     }
-    // this should be the calling function since we use for local variables
-    let Some(ubergraph) = blueprint
-        .asset_data
-        .exports
-        .iter()
-        .position(|ex| {
-            ex.get_base_export()
-                .object_name
-                .get_content(|name| name.starts_with("ExecuteUbergraph"))
-        })
-        .map(|i| Index::new(i as i32 + 1))
-    else {
-        eprintln!("couldn't find ubergraph");
-        std::process::exit(0);
+    let mut get_or_insert = |import: Import| -> Index {
+        match blueprint
+            .imports
+            .iter()
+            .position(|imp| {
+                imp.class_package.eq_content(&import.class_package)
+                    && imp.class_name.eq_content(&import.class_name)
+                    && imp.object_name.eq_content(&import.object_name)
+            })
+            .map(|i| Index::new(-(i as i32 + 1)))
+        {
+            Some(i) => i,
+            None => {
+                let len = blueprint.imports.len();
+                blueprint.imports.push(import);
+                Index::new(-(len as i32 + 1))
+            }
+        }
+        // need to add to create before serialisation deps
     };
     let null = Pointer::from_new(FieldPath::new(vec![], Index::new(0)));
     let coreuobject_name = name!("/Script/CoreUObject");
     let package_name = name!("Package");
-    let script_hook_interface = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            package_name.clone(),
-            Index::new(0),
-            name!(hook_path),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
+    let script_hook_interface = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        package_name.clone(),
+        Index::new(0),
+        name!(hook_path),
+        false,
+    ));
     let engine_name = name!("/Script/Engine");
     let blueprint_generated_class_name = name!("BlueprintGeneratedClass");
-    let hook_interface = get_or_insert(
-        Import::new(
-            engine_name.clone(),
-            blueprint_generated_class_name.clone(),
-            script_hook_interface,
-            name!(hook_name),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
+    let hook_interface = get_or_insert(Import::new(
+        engine_name.clone(),
+        blueprint_generated_class_name.clone(),
+        script_hook_interface,
+        name!(hook_name),
+        false,
+    ));
     let hooks_name = name!("hooks");
     let none_name = name!("None");
     let Some(class) = blueprint
@@ -105,38 +86,41 @@ pub fn hook(
                 use unreal_asset::flags::EObjectFlags as O;
                 use unreal_asset::flags::EPropertyFlags as P;
                 use unreal_asset::fproperty::*;
-                class
-                    .struct_export
-                    .loaded_properties
-                    .push(FProperty::FArrayProperty(FArrayProperty {
-                        generic_property: FGenericProperty {
-                            name: hooks_name.clone(),
-                            flags: O::RF_PUBLIC | O::RF_LOAD_COMPLETED,
-                            array_dim: D::TArray,
-                            element_size: 16,
-                            property_flags: P::CPF_EDIT
-                                | P::CPF_BLUEPRINT_VISIBLE
-                                | P::CPF_DISABLE_EDIT_ON_INSTANCE,
-                            rep_index: 0,
-                            rep_notify_func: none_name.clone(),
-                            blueprint_replication_condition: L::CondNone,
-                            serialized_type: None,
-                        },
-                        inner: Box::new(FProperty::FInterfaceProperty(FInterfaceProperty {
+                // add the hooks variable
+                if init {
+                    class
+                        .struct_export
+                        .loaded_properties
+                        .push(FProperty::FArrayProperty(FArrayProperty {
                             generic_property: FGenericProperty {
                                 name: hooks_name.clone(),
-                                flags: O::RF_PUBLIC,
+                                flags: O::RF_PUBLIC | O::RF_LOAD_COMPLETED,
                                 array_dim: D::TArray,
                                 element_size: 16,
-                                property_flags: P::CPF_NONE,
+                                property_flags: P::CPF_EDIT
+                                    | P::CPF_BLUEPRINT_VISIBLE
+                                    | P::CPF_DISABLE_EDIT_ON_INSTANCE,
                                 rep_index: 0,
                                 rep_notify_func: none_name.clone(),
                                 blueprint_replication_condition: L::CondNone,
                                 serialized_type: None,
                             },
-                            interface_class: hook_interface,
-                        })),
-                    }));
+                            inner: Box::new(FProperty::FInterfaceProperty(FInterfaceProperty {
+                                generic_property: FGenericProperty {
+                                    name: hooks_name.clone(),
+                                    flags: O::RF_PUBLIC,
+                                    array_dim: D::TArray,
+                                    element_size: 16,
+                                    property_flags: P::CPF_NONE,
+                                    rep_index: 0,
+                                    rep_notify_func: none_name.clone(),
+                                    blueprint_replication_condition: L::CondNone,
+                                    serialized_type: None,
+                                },
+                                interface_class: hook_interface,
+                            })),
+                        }));
+                }
                 true
             }
             _ => false,
@@ -147,30 +131,24 @@ pub fn hook(
         std::process::exit(0);
     };
     let class_name = name!("Class");
-    let script_registry = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            package_name.clone(),
-            Index::new(0),
-            name!("/Script/AssetRegistry"),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
-    let registry_helpers = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            class_name.clone(),
-            script_registry,
-            name!("AssetRegistryHelpers"),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
+    let script_registry = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        package_name.clone(),
+        Index::new(0),
+        name!("/Script/AssetRegistry"),
+        false,
+    ));
+    let registry_helpers = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        class_name.clone(),
+        script_registry,
+        name!("AssetRegistryHelpers"),
+        false,
+    ));
     // get asset registry
     let registry = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_GetAssetRegistry_ReturnValue")],
-        ubergraph,
+        this,
     ));
     let function_name = name!("Function");
     let get_asset_registry = K::ExLet(ExLet {
@@ -182,24 +160,19 @@ pub fn hook(
         })),
         expression: Box::new(K::ExCallMath(ExCallMath {
             token: T::ExCallMath,
-            stack_node: get_or_insert(
-                Import::new(
-                    coreuobject_name.clone(),
-                    function_name.clone(),
-                    registry_helpers,
-                    name!("GetAssetRegistry"),
-                    false,
-                ),
-                &mut blueprint.imports,
-            ),
+            stack_node: get_or_insert(Import::new(
+                coreuobject_name.clone(),
+                function_name.clone(),
+                registry_helpers,
+                name!("GetAssetRegistry"),
+                false,
+            )),
             parameters: vec![],
         })),
     });
     push!(get_asset_registry.clone());
-    let hook_folder_arr = Pointer::from_new(FieldPath::new(
-        vec![name!("K2Node_MakeArray_Array")],
-        ubergraph,
-    ));
+    let hook_folder_arr =
+        Pointer::from_new(FieldPath::new(vec![name!("K2Node_MakeArray_Array")], this));
     // create local array for ScanPathsSynchronous
     push!(K::ExSetArray(ExSetArray {
         token: T::ExSetArray,
@@ -243,7 +216,7 @@ pub fn hook(
     // i think this local is generated by the virtual function which is why there's no let expression
     let assets = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_GetAssetsByPath_OutAssetData")],
-        ubergraph,
+        this,
     ));
     push!(K::ExSetArray(ExSetArray {
         token: T::ExSetArray,
@@ -257,56 +230,44 @@ pub fn hook(
     // return value isn't used so probably doesn't need to be set
 
     // okay time to set up the for loop stuff
-    let counter = Pointer::from_new(FieldPath::new(vec![name!("counter")], ubergraph));
+    let counter = Pointer::from_new(FieldPath::new(vec![name!("counter")], this));
     let is_less = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_Less_IntInt_ReturnValue")],
-        ubergraph,
+        this,
     ));
     let len = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_Array_Length_ReturnValue")],
-        ubergraph,
+        this,
     ));
-    let script_engine = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            package_name.clone(),
-            Index::new(0),
-            engine_name.clone(),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
-    let kismet_math_library = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            class_name.clone(),
-            script_engine,
-            name!("Less_IntInt"),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
+    let script_engine = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        package_name.clone(),
+        Index::new(0),
+        engine_name.clone(),
+        false,
+    ));
+    let kismet_math_library = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        class_name.clone(),
+        script_engine,
+        name!("Less_IntInt"),
+        false,
+    ));
     let kismet_array_library_name = name!("KismetArrayLibrary");
-    let default_kismet_array_library = get_or_insert(
-        Import::new(
-            engine_name.clone(),
-            kismet_array_library_name.clone(),
-            script_engine,
-            name!("Default__KismetArrayLibrary"),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
-    let kismet_array_library = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            class_name.clone(),
-            script_engine,
-            kismet_array_library_name.clone(),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
+    let default_kismet_array_library = get_or_insert(Import::new(
+        engine_name.clone(),
+        kismet_array_library_name.clone(),
+        script_engine,
+        name!("Default__KismetArrayLibrary"),
+        false,
+    ));
+    let kismet_array_library = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        class_name.clone(),
+        script_engine,
+        kismet_array_library_name.clone(),
+        false,
+    ));
     let hooks = Pointer::from_new(FieldPath::new(vec![hooks_name.clone()], class));
     push!(K::ExLet(ExLet {
         token: T::ExLet,
@@ -325,16 +286,13 @@ pub fn hook(
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
-                stack_node: get_or_insert(
-                    Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
-                        kismet_array_library,
-                        name!("Array_Length"),
-                        false,
-                    ),
-                    &mut blueprint.imports,
-                ),
+                stack_node: get_or_insert(Import::new(
+                    coreuobject_name.clone(),
+                    function_name.clone(),
+                    kismet_array_library,
+                    name!("Array_Length"),
+                    false,
+                ),),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
                     variable: hooks.clone(),
@@ -344,7 +302,7 @@ pub fn hook(
     }));
     let incremented = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_Add_IntInt_ReturnValue")],
-        ubergraph,
+        this,
     ));
     // no need to refresh the length of the array since it doesn't change
     macro_rules! for_loop {
@@ -379,7 +337,6 @@ pub fn hook(
                             name!("Less_IntInt"),
                             false,
                         ),
-                        &mut blueprint.imports,
                     ),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
@@ -413,7 +370,6 @@ pub fn hook(
                             name!("Add_IntInt"),
                             false,
                         ),
-                        &mut blueprint.imports,
                     ),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
@@ -474,7 +430,7 @@ pub fn hook(
     }
     let len = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_Array_Length_ReturnValue")],
-        ubergraph,
+        this,
     ));
     push!(K::ExLet(ExLet {
         token: T::ExLet,
@@ -493,16 +449,13 @@ pub fn hook(
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
-                stack_node: get_or_insert(
-                    Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
-                        kismet_array_library,
-                        name!("Array_Length"),
-                        false,
-                    ),
-                    &mut blueprint.imports,
-                ),
+                stack_node: get_or_insert(Import::new(
+                    coreuobject_name.clone(),
+                    function_name.clone(),
+                    kismet_array_library,
+                    name!("Array_Length"),
+                    false,
+                ),),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
                     variable: assets.clone(),
@@ -510,37 +463,31 @@ pub fn hook(
             })),
         })),
     }));
-    let item = Pointer::from_new(FieldPath::new(
-        vec![name!("CallFunc_Array_Get_Item")],
-        ubergraph,
-    ));
+    let item = Pointer::from_new(FieldPath::new(vec![name!("CallFunc_Array_Get_Item")], this));
     let get_asset_name = name!("GetAsset");
     let asset = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_GetAsset_ReturnValue")],
-        ubergraph,
+        this,
     ));
     let cast = Pointer::from_new(FieldPath::new(
         vec![name!(&format!("K2Node_DynamicCast_As{hook_name}"))],
-        ubergraph,
+        this,
     ));
     let cast_success = Pointer::from_new(FieldPath::new(
         vec![name!("K2Node_DynamicCast_bSuccess")],
-        ubergraph,
+        this,
     ));
     let array_added = Pointer::from_new(FieldPath::new(
         vec![name!("CallFunc_Array_Add_ReturnValue")],
-        ubergraph,
+        this,
     ));
-    let array_add = get_or_insert(
-        Import::new(
-            coreuobject_name.clone(),
-            function_name.clone(),
-            kismet_array_library,
-            name!("Array_Add"),
-            false,
-        ),
-        &mut blueprint.imports,
-    );
+    let array_add = get_or_insert(Import::new(
+        coreuobject_name.clone(),
+        function_name.clone(),
+        kismet_array_library,
+        name!("Array_Add"),
+        false,
+    ));
     for_loop!(
         len,
         vec![
@@ -554,16 +501,13 @@ pub fn hook(
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
-                    stack_node: get_or_insert(
-                        Import::new(
-                            coreuobject_name.clone(),
-                            function_name.clone(),
-                            kismet_array_library,
-                            name!("Array_Get"),
-                            false,
-                        ),
-                        &mut blueprint.imports,
-                    ),
+                    stack_node: get_or_insert(Import::new(
+                        coreuobject_name.clone(),
+                        function_name.clone(),
+                        kismet_array_library,
+                        name!("Array_Get"),
+                        false,
+                    ),),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
                             token: T::ExLocalVariable,
@@ -588,16 +532,13 @@ pub fn hook(
                 })),
                 assignment_expression: Box::new(K::ExCallMath(ExCallMath {
                     token: T::ExCallMath,
-                    stack_node: get_or_insert(
-                        Import::new(
-                            coreuobject_name.clone(),
-                            function_name.clone(),
-                            registry_helpers,
-                            get_asset_name.clone(),
-                            false,
-                        ),
-                        &mut blueprint.imports,
-                    ),
+                    stack_node: get_or_insert(Import::new(
+                        coreuobject_name.clone(),
+                        function_name.clone(),
+                        registry_helpers,
+                        get_asset_name.clone(),
+                        false,
+                    ),),
                     parameters: vec![K::ExLocalVariable(ExLocalVariable {
                         token: T::ExLocalVariable,
                         variable: item.clone(),
@@ -694,16 +635,13 @@ pub fn hook(
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
-                stack_node: get_or_insert(
-                    Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
-                        kismet_array_library,
-                        name!("Array_Length"),
-                        false,
-                    ),
-                    &mut blueprint.imports,
-                ),
+                stack_node: get_or_insert(Import::new(
+                    coreuobject_name.clone(),
+                    function_name.clone(),
+                    kismet_array_library,
+                    name!("Array_Length"),
+                    false,
+                ),),
                 parameters: vec![K::ExInstanceVariable(ExInstanceVariable {
                     token: T::ExInstanceVariable,
                     variable: hooks.clone(),
@@ -725,16 +663,13 @@ pub fn hook(
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
-                    stack_node: get_or_insert(
-                        Import::new(
-                            coreuobject_name.clone(),
-                            function_name.clone(),
-                            kismet_array_library,
-                            name!("Array_Get"),
-                            false,
-                        ),
-                        &mut blueprint.imports,
-                    ),
+                    stack_node: get_or_insert(Import::new(
+                        coreuobject_name.clone(),
+                        function_name.clone(),
+                        kismet_array_library,
+                        name!("Array_Get"),
+                        false,
+                    ),),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
                             token: T::ExLocalVariable,
@@ -794,16 +729,13 @@ pub fn hook(
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
-                    stack_node: get_or_insert(
-                        Import::new(
-                            coreuobject_name.clone(),
-                            function_name.clone(),
-                            kismet_array_library,
-                            name!("Array_Get"),
-                            false,
-                        ),
-                        &mut blueprint.imports,
-                    ),
+                    stack_node: get_or_insert(Import::new(
+                        coreuobject_name.clone(),
+                        function_name.clone(),
+                        kismet_array_library,
+                        name!("Array_Get"),
+                        false,
+                    ),),
                     parameters: vec![
                         K::ExLocalVariable(ExLocalVariable {
                             token: T::ExLocalVariable,

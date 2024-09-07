@@ -23,7 +23,7 @@ pub fn hook(
     let hook_folder = "";
     let hook_path = "";
     let hook_name = "";
-    let function = "";
+    let function_name = "";
     // currently don't know how many instructions this'll be
     let mut stack = vec![];
     let mut offset = 0;
@@ -35,7 +35,7 @@ pub fn hook(
         }};
     }
     let mut get_or_insert = |import: Import| -> Index {
-        match blueprint
+        let import_ref = match blueprint
             .imports
             .iter()
             .position(|imp| {
@@ -51,23 +51,30 @@ pub fn hook(
                 blueprint.imports.push(import);
                 Index::new(-(len as i32 + 1))
             }
+        };
+        // add to create before serialisation deps
+        let deps = &mut function
+            .get_base_export_mut()
+            .create_before_serialization_dependencies;
+        if !deps.contains(&import_ref) {
+            deps.push(import_ref)
         }
-        // need to add to create before serialisation deps
+        import_ref
     };
     let null = Pointer::from_new(FieldPath::new(vec![], Index::new(0)));
-    let coreuobject_name = name!("/Script/CoreUObject");
-    let package_name = name!("Package");
+    let coreuobject_import_name = name!("/Script/CoreUObject");
+    let package_import_name = name!("Package");
     let script_hook_interface = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        package_name.clone(),
+        coreuobject_import_name.clone(),
+        package_import_name.clone(),
         Index::new(0),
         name!(hook_path),
         false,
     ));
-    let engine_name = name!("/Script/Engine");
+    let engine_import_name = name!("/Script/Engine");
     let blueprint_generated_class_name = name!("BlueprintGeneratedClass");
     let hook_interface = get_or_insert(Import::new(
-        engine_name.clone(),
+        engine_import_name.clone(),
         blueprint_generated_class_name.clone(),
         script_hook_interface,
         name!(hook_name),
@@ -130,17 +137,17 @@ pub fn hook(
         eprintln!("couldn't find ubergraph");
         std::process::exit(0);
     };
-    let class_name = name!("Class");
+    let class_import_name = name!("Class");
     let script_registry = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        package_name.clone(),
+        coreuobject_import_name.clone(),
+        package_import_name.clone(),
         Index::new(0),
         name!("/Script/AssetRegistry"),
         false,
     ));
     let registry_helpers = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        class_name.clone(),
+        coreuobject_import_name.clone(),
+        class_import_name.clone(),
         script_registry,
         name!("AssetRegistryHelpers"),
         false,
@@ -150,7 +157,7 @@ pub fn hook(
         vec![name!("CallFunc_GetAssetRegistry_ReturnValue")],
         this,
     ));
-    let function_name = name!("Function");
+    let function_import_name = name!("Function");
     let get_asset_registry = K::ExLet(ExLet {
         token: T::ExLet,
         value: registry.clone(),
@@ -161,8 +168,8 @@ pub fn hook(
         expression: Box::new(K::ExCallMath(ExCallMath {
             token: T::ExCallMath,
             stack_node: get_or_insert(Import::new(
-                coreuobject_name.clone(),
-                function_name.clone(),
+                coreuobject_import_name.clone(),
+                function_import_name.clone(),
                 registry_helpers,
                 name!("GetAssetRegistry"),
                 false,
@@ -240,32 +247,32 @@ pub fn hook(
         this,
     ));
     let script_engine = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        package_name.clone(),
+        coreuobject_import_name.clone(),
+        package_import_name.clone(),
         Index::new(0),
-        engine_name.clone(),
+        engine_import_name.clone(),
         false,
     ));
-    let kismet_math_library = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        class_name.clone(),
+    let math_lib = get_or_insert(Import::new(
+        coreuobject_import_name.clone(),
+        class_import_name.clone(),
         script_engine,
         name!("Less_IntInt"),
         false,
     ));
-    let kismet_array_library_name = name!("KismetArrayLibrary");
-    let default_kismet_array_library = get_or_insert(Import::new(
-        engine_name.clone(),
-        kismet_array_library_name.clone(),
+    let array_lib_import_name = name!("KismetArrayLibrary");
+    let default_array_lib = get_or_insert(Import::new(
+        engine_import_name.clone(),
+        array_lib_import_name.clone(),
         script_engine,
         name!("Default__KismetArrayLibrary"),
         false,
     ));
-    let kismet_array_library = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        class_name.clone(),
+    let array_lib = get_or_insert(Import::new(
+        coreuobject_import_name.clone(),
+        class_import_name.clone(),
         script_engine,
-        kismet_array_library_name.clone(),
+        array_lib_import_name.clone(),
         false,
     ));
     let hooks = Pointer::from_new(FieldPath::new(vec![hooks_name.clone()], class));
@@ -280,16 +287,16 @@ pub fn hook(
             token: T::ExContext,
             object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                 token: T::ExObjectConst,
-                value: default_kismet_array_library,
+                value: default_array_lib,
             })),
             offset: 19,
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
                 stack_node: get_or_insert(Import::new(
-                    coreuobject_name.clone(),
-                    function_name.clone(),
-                    kismet_array_library,
+                    coreuobject_import_name.clone(),
+                    function_import_name.clone(),
+                    array_lib,
                     name!("Array_Length"),
                     false,
                 ),),
@@ -331,9 +338,9 @@ pub fn hook(
                     token: T::ExCallMath,
                     stack_node: get_or_insert(
                         Import::new(
-                            coreuobject_name.clone(),
-                            function_name.clone(),
-                            kismet_math_library,
+                            coreuobject_import_name.clone(),
+                            function_import_name.clone(),
+                            math_lib,
                             name!("Less_IntInt"),
                             false,
                         ),
@@ -364,9 +371,9 @@ pub fn hook(
                     token: T::ExCallMath,
                     stack_node: get_or_insert(
                         Import::new(
-                            coreuobject_name.clone(),
-                            function_name.clone(),
-                            kismet_math_library,
+                            coreuobject_import_name.clone(),
+                            function_import_name.clone(),
+                            math_lib,
                             name!("Add_IntInt"),
                             false,
                         ),
@@ -443,16 +450,16 @@ pub fn hook(
             token: T::ExContext,
             object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                 token: T::ExObjectConst,
-                value: default_kismet_array_library,
+                value: default_array_lib,
             })),
             offset: 19,
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
                 stack_node: get_or_insert(Import::new(
-                    coreuobject_name.clone(),
-                    function_name.clone(),
-                    kismet_array_library,
+                    coreuobject_import_name.clone(),
+                    function_import_name.clone(),
+                    array_lib,
                     name!("Array_Length"),
                     false,
                 ),),
@@ -482,9 +489,9 @@ pub fn hook(
         this,
     ));
     let array_add = get_or_insert(Import::new(
-        coreuobject_name.clone(),
-        function_name.clone(),
-        kismet_array_library,
+        coreuobject_import_name.clone(),
+        function_import_name.clone(),
+        array_lib,
         name!("Array_Add"),
         false,
     ));
@@ -495,16 +502,16 @@ pub fn hook(
                 token: T::ExContext,
                 object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                     token: T::ExObjectConst,
-                    value: default_kismet_array_library,
+                    value: default_array_lib,
                 })),
                 offset: 37,
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
                     stack_node: get_or_insert(Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
-                        kismet_array_library,
+                        coreuobject_import_name.clone(),
+                        function_import_name.clone(),
+                        array_lib,
                         name!("Array_Get"),
                         false,
                     ),),
@@ -533,8 +540,8 @@ pub fn hook(
                 assignment_expression: Box::new(K::ExCallMath(ExCallMath {
                     token: T::ExCallMath,
                     stack_node: get_or_insert(Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
+                        coreuobject_import_name.clone(),
+                        function_import_name.clone(),
                         registry_helpers,
                         get_asset_name.clone(),
                         false,
@@ -596,7 +603,7 @@ pub fn hook(
                     token: T::ExContext,
                     object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                         token: T::ExObjectConst,
-                        value: default_kismet_array_library
+                        value: default_array_lib
                     })),
                     offset: 28,
                     r_value_pointer: array_added.clone(),
@@ -629,16 +636,16 @@ pub fn hook(
             token: T::ExContext,
             object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                 token: T::ExObjectConst,
-                value: default_kismet_array_library,
+                value: default_array_lib,
             })),
             offset: 19,
             r_value_pointer: len.clone(),
             context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                 token: T::ExFinalFunction,
                 stack_node: get_or_insert(Import::new(
-                    coreuobject_name.clone(),
-                    function_name.clone(),
-                    kismet_array_library,
+                    coreuobject_import_name.clone(),
+                    function_import_name.clone(),
+                    array_lib,
                     name!("Array_Length"),
                     false,
                 ),),
@@ -649,7 +656,7 @@ pub fn hook(
             })),
         })),
     }));
-    let pre_function = name!(&format!("pre_{function}"));
+    let pre_function = name!(&format!("pre_{function_name}"));
     for_loop!(
         len.clone(),
         vec![
@@ -657,16 +664,16 @@ pub fn hook(
                 token: T::ExContext,
                 object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                     token: T::ExObjectConst,
-                    value: default_kismet_array_library,
+                    value: default_array_lib,
                 })),
                 offset: 37,
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
                     stack_node: get_or_insert(Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
-                        kismet_array_library,
+                        coreuobject_import_name.clone(),
+                        function_import_name.clone(),
+                        array_lib,
                         name!("Array_Get"),
                         false,
                     ),),
@@ -710,12 +717,12 @@ pub fn hook(
     );
     push!(K::ExLocalVirtualFunction(ExLocalVirtualFunction {
         token: T::ExLocalVirtualFunction,
-        virtual_function_name: name!(&format!("orig_{function}")),
+        virtual_function_name: name!(&format!("orig_{function_name}")),
         parameters: vec![
             // other params
         ]
     }));
-    let post_function = name!(&format!("post_{function}"));
+    let post_function = name!(&format!("post_{function_name}"));
     for_loop!(
         len.clone(),
         vec![
@@ -723,16 +730,16 @@ pub fn hook(
                 token: T::ExContext,
                 object_expression: Box::new(K::ExObjectConst(ExObjectConst {
                     token: T::ExObjectConst,
-                    value: default_kismet_array_library,
+                    value: default_array_lib,
                 })),
                 offset: 37,
                 r_value_pointer: null.clone(),
                 context_expression: Box::new(K::ExFinalFunction(ExFinalFunction {
                     token: T::ExFinalFunction,
                     stack_node: get_or_insert(Import::new(
-                        coreuobject_name.clone(),
-                        function_name.clone(),
-                        kismet_array_library,
+                        coreuobject_import_name.clone(),
+                        function_import_name.clone(),
+                        array_lib,
                         name!("Array_Get"),
                         false,
                     ),),

@@ -1,6 +1,7 @@
 use clap::Parser;
 // export imported because cast macro doesn't use pattern
 use unreal_asset::exports::{Export, ExportBaseTrait};
+use unreal_asset::types::PackageIndex as Index;
 
 mod cli;
 mod io;
@@ -36,12 +37,22 @@ fn main() {
         eprintln!("class export couldn't be found");
         std::process::exit(0)
     };
-    // two loops for now so class gets dropped
-    for (i, (_, function)) in functions.iter().enumerate() {
+    // two loops for now so class gets dropped - need to another way and prevent the extra work
+    for (i, (old, function)) in functions.iter().enumerate() {
         // replace old functions
         class.func_map.insert(
             function.get_base_export().object_name.clone(),
-            unreal_asset::types::PackageIndex::new((insert + i) as i32 + 1),
+            Index::new((insert + i) as i32 + 1),
+        );
+        // add old functions to map
+        class.func_map.insert(
+            name_map.get_mut().add_fname(
+                &function
+                    .get_base_export()
+                    .object_name
+                    .get_content(|name| format!("orig_{name}")),
+            ),
+            Index::new(*old as i32 + 1),
         );
     }
     for (new, (old, mut function)) in functions.into_iter().enumerate() {
@@ -55,7 +66,7 @@ fn main() {
             .add_fname(&name.get_content(|name| format!("orig_{name}")));
         kismet::hook(
             &mut function,
-            unreal_asset::types::PackageIndex::new((insert + new) as i32 + 1),
+            Index::new((insert + new) as i32 + 1),
             &mut name_map,
             &mut blueprint,
         );

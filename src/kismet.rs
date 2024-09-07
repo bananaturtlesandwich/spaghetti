@@ -1007,11 +1007,8 @@ pub fn hook(
             })
         ]
     );
-    // to suppress warnings about not using offset
-    let _ = offset;
-    // need to update unreal_asset to not use script_bytecode_size
-    // and store bytecode as Result
     function.struct_export.script_bytecode = Some(stack);
+    function.struct_export.script_bytecode_size = offset as i32;
 }
 
 #[test]

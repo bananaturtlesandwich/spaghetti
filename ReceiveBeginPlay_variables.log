@@ -1,0 +1,896 @@
+[
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "Temp_int_Loop_Counter_Variable",
+                number: 0,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Add_IntInt_ReturnValue",
+                number: 0,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "Temp_int_Array_Index_Variable",
+                number: 0,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "Temp_int_Array_Index_Variable",
+                number: 2,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "Temp_int_Loop_Counter_Variable",
+                number: 2,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Add_IntInt_ReturnValue",
+                number: 2,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "Temp_int_Array_Index_Variable",
+                number: 3,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FInterfaceProperty(
+        FInterfaceProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_Array_Get_Item",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 16,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            interface_class: PackageIndex {
+                index: -2,
+            },
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Array_Length_ReturnValue",
+                number: 0,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "Temp_int_Loop_Counter_Variable",
+                number: 3,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FBoolProperty(
+        FBoolProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_Less_IntInt_ReturnValue",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 1,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            field_size: 1,
+            byte_offset: 0,
+            byte_mask: 1,
+            field_mask: 255,
+            native_bool: true,
+            value: true,
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Add_IntInt_ReturnValue",
+                number: 3,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FInterfaceProperty(
+        FInterfaceProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_Array_Get_Item",
+                    number: 2,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 16,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            interface_class: PackageIndex {
+                index: -2,
+            },
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Array_Length_ReturnValue",
+                number: 2,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FBoolProperty(
+        FBoolProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_Less_IntInt_ReturnValue",
+                    number: 2,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 1,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            field_size: 1,
+            byte_offset: 0,
+            byte_mask: 1,
+            field_mask: 255,
+            native_bool: true,
+            value: true,
+        },
+    ),
+    FInterfaceProperty(
+        FInterfaceProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_GetAssetRegistry_ReturnValue",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 16,
+                property_flags: EPropertyFlags(
+                    CPF_U_OBJECT_WRAPPER,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            interface_class: PackageIndex {
+                index: -4,
+            },
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Conv_NameToString_ReturnValue",
+                number: 0,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 16,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "StrProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FArrayProperty(
+        FArrayProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_GetAssetsByPath_OutAssetData",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 16,
+                property_flags: EPropertyFlags(
+                    CPF_REFERENCE_PARM,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            inner: FStructProperty(
+                FStructProperty {
+                    generic_property: FGenericProperty {
+                        name: Backed {
+                            value: "CallFunc_GetAssetsByPath_OutAssetData",
+                            number: 0,
+                            ty: Package,
+                        },
+                        flags: EObjectFlags(
+                            RF_PUBLIC,
+                        ),
+                        array_dim: TArray,
+                        element_size: 152,
+                        property_flags: EPropertyFlags(
+                            0x0,
+                        ),
+                        rep_index: 0,
+                        rep_notify_func: Backed {
+                            value: "None",
+                            number: 0,
+                            ty: Package,
+                        },
+                        blueprint_replication_condition: CondNone,
+                        serialized_type: None,
+                    },
+                    struct_value: PackageIndex {
+                        index: -31,
+                    },
+                },
+            ),
+        },
+    ),
+    FBoolProperty(
+        FBoolProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_GetAssetsByPath_ReturnValue",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 1,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            field_size: 1,
+            byte_offset: 0,
+            byte_mask: 1,
+            field_mask: 255,
+            native_bool: true,
+            value: true,
+        },
+    ),
+    FArrayProperty(
+        FArrayProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "K2Node_MakeArray_Array",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 16,
+                property_flags: EPropertyFlags(
+                    CPF_CONST_PARM | CPF_REFERENCE_PARM,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            inner: FGenericProperty(
+                FGenericProperty {
+                    name: Backed {
+                        value: "K2Node_MakeArray_Array",
+                        number: 0,
+                        ty: Package,
+                    },
+                    flags: EObjectFlags(
+                        RF_PUBLIC,
+                    ),
+                    array_dim: TArray,
+                    element_size: 16,
+                    property_flags: EPropertyFlags(
+                        0x0,
+                    ),
+                    rep_index: 0,
+                    rep_notify_func: Backed {
+                        value: "None",
+                        number: 0,
+                        ty: Package,
+                    },
+                    blueprint_replication_condition: CondNone,
+                    serialized_type: Some(
+                        Backed {
+                            value: "StrProperty",
+                            number: 0,
+                            ty: Package,
+                        },
+                    ),
+                },
+            ),
+        },
+    ),
+    FStructProperty(
+        FStructProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_Array_Get_Item",
+                    number: 3,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 152,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            struct_value: PackageIndex {
+                index: -31,
+            },
+        },
+    ),
+    FObjectProperty(
+        FObjectProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_GetAsset_ReturnValue",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 8,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            property_class: PackageIndex {
+                index: -7,
+            },
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Array_Length_ReturnValue",
+                number: 3,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+    FInterfaceProperty(
+        FInterfaceProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "K2Node_DynamicCast_AsTest_Hooks",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 16,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            interface_class: PackageIndex {
+                index: -2,
+            },
+        },
+    ),
+    FBoolProperty(
+        FBoolProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "K2Node_DynamicCast_bSuccess",
+                    number: 0,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 1,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            field_size: 1,
+            byte_offset: 0,
+            byte_mask: 1,
+            field_mask: 255,
+            native_bool: true,
+            value: true,
+        },
+    ),
+    FBoolProperty(
+        FBoolProperty {
+            generic_property: FGenericProperty {
+                name: Backed {
+                    value: "CallFunc_Less_IntInt_ReturnValue",
+                    number: 3,
+                    ty: Package,
+                },
+                flags: EObjectFlags(
+                    RF_PUBLIC,
+                ),
+                array_dim: TArray,
+                element_size: 1,
+                property_flags: EPropertyFlags(
+                    0x0,
+                ),
+                rep_index: 0,
+                rep_notify_func: Backed {
+                    value: "None",
+                    number: 0,
+                    ty: Package,
+                },
+                blueprint_replication_condition: CondNone,
+                serialized_type: None,
+            },
+            field_size: 1,
+            byte_offset: 0,
+            byte_mask: 1,
+            field_mask: 255,
+            native_bool: true,
+            value: true,
+        },
+    ),
+    FGenericProperty(
+        FGenericProperty {
+            name: Backed {
+                value: "CallFunc_Array_Add_ReturnValue",
+                number: 0,
+                ty: Package,
+            },
+            flags: EObjectFlags(
+                RF_PUBLIC,
+            ),
+            array_dim: TArray,
+            element_size: 4,
+            property_flags: EPropertyFlags(
+                0x0,
+            ),
+            rep_index: 0,
+            rep_notify_func: Backed {
+                value: "None",
+                number: 0,
+                ty: Package,
+            },
+            blueprint_replication_condition: CondNone,
+            serialized_type: Some(
+                Backed {
+                    value: "IntProperty",
+                    number: 0,
+                    ty: Package,
+                },
+            ),
+        },
+    ),
+]

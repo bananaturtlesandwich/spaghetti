@@ -26,8 +26,9 @@ fn get_or_insert(import: Import, imports: &mut Vec<Import>) -> Index {
     }
 }
 
+// need to add local variables to the loaded properties
 pub fn init(
-    mut name_map: unreal_asset::containers::SharedResource<unreal_asset::containers::NameMap>,
+    name_map: &mut unreal_asset::containers::SharedResource<unreal_asset::containers::NameMap>,
     blueprint: &mut unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
 ) -> Vec<K> {
     macro_rules! name {
@@ -43,7 +44,7 @@ pub fn init(
     // currently don't know how many instructions this'll be
     let mut stack = Vec::with_capacity(4);
     let mut offset = 0;
-    let obj = blueprint.asset_data.object_version_ue5.clone();
+    let obj = blueprint.asset_data.object_version_ue5;
     macro_rules! push {
         ($inst: expr) => {{
             offset += size(&obj, &$inst);

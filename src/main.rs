@@ -4,10 +4,81 @@ use unreal_asset::exports::{Export, ExportBaseTrait};
 
 mod cli;
 mod io;
-// have to inline kismet because of differences between engine versions
 mod kismet;
 
 fn main() {
+    let (orig_path, output, mut blueprint) = args();
+    let mut name_map = blueprint.get_name_map().clone_resource();
+    // duplicate functions
+    let insert = blueprint.asset_data.exports.len();
+    let mut functions: Vec<_> = blueprint
+        .asset_data
+        .exports
+        .iter()
+        .filter(|ex| {
+            matches!(ex, Export::FunctionExport(_))
+                && !ex
+                    .get_base_export()
+                    .object_name
+                    .get_content(|name| name.starts_with("ExecuteUbergraph"))
+        })
+        .cloned()
+        .map(|mut ex| {
+            // duplication is super simple for functions since they have no export refs
+            let name = &mut ex.get_base_export_mut().object_name;
+            // need to improve name api to not clone as often
+            *name = name_map
+                .get_mut()
+                .add_fname(&name.get_content(|name| format!("orig_{name}")));
+            ex
+        })
+        .collect();
+    let Some(class) = blueprint
+        .asset_data
+        .exports
+        .iter_mut()
+        .find_map(|ex| unreal_asset::cast!(Export, ClassExport, ex))
+    else {
+        eprintln!("class export couldn't be found");
+        std::process::exit(0)
+    };
+    for (i, export) in functions.iter().enumerate() {
+        class.func_map.insert(
+            export.get_base_export().object_name.clone(),
+            unreal_asset::types::PackageIndex::new((insert + i) as i32 + 1),
+        );
+    }
+    blueprint.asset_data.exports.append(&mut functions);
+    // i could split like before but there's really no point
+    // let bytecode = kismet::init(&mut name_map, &mut blueprint);
+    /*
+    let Some(beginplay) = class
+        .func_map
+        .iter()
+        .find_map(|(_, key, val)| (key == "ReceiveBeginPlay").then_some(*val))
+    else {
+        eprintln!("adding ReceiveBeginPlay currently isn't supported");
+        std::process::exit(0)
+    };
+    let Export::FunctionExport(beginplay) =
+        &mut blueprint.asset_data.exports[beginplay.index as usize - 1]
+    else {
+        eprintln!("ReceiveBeginPlay couldn't be retrieved");
+        std::process::exit(0)
+    };
+    beginplay.struct_export.script_bytecode = Some(bytecode);
+    */
+    io::save(&mut blueprint, output.unwrap_or(orig_path)).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        std::process::exit(0);
+    });
+}
+
+fn args() -> (
+    std::path::PathBuf,
+    Option<std::path::PathBuf>,
+    unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
+) {
     let cli::Cli {
         orig: orig_path,
         mut output,
@@ -57,92 +128,9 @@ fn main() {
         }
         None => unreal_asset::engine_version::EngineVersion::VER_UE5_1,
     };
-    let mut blueprint = io::open(&orig_path, version).unwrap_or_else(|e| {
+    let blueprint = io::open(&orig_path, version).unwrap_or_else(|e| {
         eprintln!("{e}");
         std::process::exit(0);
     });
-    let mut name_map = blueprint.get_name_map().clone_resource();
-    // i could split like before but there's really no point
-    let redirects: Vec<_> = blueprint
-        .asset_data
-        .exports
-        .iter_mut()
-        .enumerate()
-        .filter(|(_, ex)| {
-            !ex.get_base_export()
-                .object_name
-                .get_content(|name| name.starts_with("ExecuteUbergraph"))
-        })
-        .filter_map(|(i, ex)| unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex)))
-        .map(|(i, func)| {
-            let name = name_map.get_mut().add_fname(
-                &func
-                    .get_base_export()
-                    .object_name
-                    .get_content(|name| format!("orig_{name}")),
-            );
-            func.get_base_export_mut().object_name = name.clone();
-            // return these to be added to the function map in ClassExport
-            (
-                name,
-                unreal_asset::types::PackageIndex {
-                    index: i as i32 + 1,
-                },
-            )
-        })
-        .collect();
-    // let insert = blueprint.asset_data.exports.len() as i32 + 1;
-    let bytecode = kismet::init(name_map, &mut blueprint);
-    let Some(class) = blueprint
-        .asset_data
-        .exports
-        .iter_mut()
-        .find_map(|ex| unreal_asset::cast!(Export, ClassExport, ex))
-    else {
-        eprintln!("class export couldn't be found");
-        std::process::exit(0)
-    };
-    let Some(beginplay) = class
-        .func_map
-        .iter()
-        .find_map(|(_, key, val)| (key == "ReceiveBeginPlay").then_some(*val))
-    else {
-        eprintln!("adding ReceiveBeginPlay currently isn't supported");
-        std::process::exit(0)
-    };
-    class.func_map.extend(redirects);
-    let Export::FunctionExport(beginplay) =
-        &mut blueprint.asset_data.exports[beginplay.index as usize - 1]
-    else {
-        eprintln!("ReceiveBeginPlay couldn't be retrieved");
-        std::process::exit(0)
-    };
-    beginplay.struct_export.script_bytecode = Some(bytecode);
-    // let mut insert = back.len() + split + 1;
-    // for (i, (_, name)) in funcs.iter().enumerate() {
-    //     class.func_map.insert(
-    //         name_map.get_mut().add_fname(name),
-    //         unreal_asset::types::PackageIndex {
-    //             index: (insert + i + 1) as i32,
-    //         },
-    //     );
-    // }
-    // insert += funcs.len();
-    // for (i, (_, name)) in hooks.iter().enumerate() {
-    //     let name = name.trim_start_matches("hook_");
-    //     println!("{name} hooked");
-    //     class.func_map.insert(
-    //         name_map.get_mut().add_fname(name),
-    //         unreal_asset::types::PackageIndex {
-    //             index: (insert + i + 1) as i32,
-    //         },
-    //     );
-    // }
-    // for (i, _) in funcs.into_iter().chain(hooks.into_iter()) {
-    //     transplant::transplant(i, &mut orig, &hook)
-    // }
-    io::save(&mut blueprint, output.unwrap_or(orig_path)).unwrap_or_else(|e| {
-        eprintln!("{e}");
-        std::process::exit(0);
-    });
+    (orig_path, output, blueprint)
 }

@@ -17,13 +17,13 @@ pub fn hook(
     this: Index,
     name_map: &mut unreal_asset::containers::SharedResource<unreal_asset::containers::NameMap>,
     blueprint: &mut unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
+    hook_folder: &str,
+    hook_path: &str,
+    hook_name: &str,
 ) {
-    // do this later
-    let hook_folder = "";
-    let hook_path = "";
-    let hook_name = "";
-    let function_name = "";
+    let function_name = function.get_base_export().object_name.get_owned_content();
     let init = function.get_base_export().object_name == "ReceiveBeginPlay";
+    // clear out previous locals
     function.struct_export.loaded_properties.clear();
     macro_rules! import {
         ($import: expr) => {{
@@ -60,7 +60,6 @@ pub fn hook(
             name_map.get_mut().add_fname($name)
         };
     }
-    // currently don't know how many instructions this'll be
     let mut stack = vec![];
     let mut offset = 0;
     let obj = blueprint.asset_data.object_version_ue5;

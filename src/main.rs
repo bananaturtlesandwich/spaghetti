@@ -8,7 +8,11 @@ mod io;
 mod kismet;
 
 fn main() {
-    let (orig_path, output, mut blueprint) = args();
+    let (orig_path, output, mut blueprint, hook_folder, hook_path) = args();
+    let hook_name = format!(
+        "{}_C",
+        hook_path.split('/').rev().next().unwrap_or_default()
+    );
     let mut name_map = blueprint.get_name_map().clone_resource();
     // duplicate functions
     let insert = blueprint.asset_data.exports.len();
@@ -69,6 +73,9 @@ fn main() {
             Index::new((insert + new) as i32 + 1),
             &mut name_map,
             &mut blueprint,
+            &hook_folder,
+            &hook_path,
+            &hook_name,
         );
         blueprint
             .asset_data
@@ -85,6 +92,8 @@ fn args() -> (
     std::path::PathBuf,
     Option<std::path::PathBuf>,
     unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
+    String,
+    String,
 ) {
     let cli::Cli {
         orig: orig_path,
@@ -117,27 +126,30 @@ fn args() -> (
             output = Some(path)
         }
     }
+    let get = |message| {
+        print!("{message}");
+        std::io::Write::flush(&mut std::io::stdout())
+            .map_err(clap::Error::from)
+            .unwrap_or_else(|e| e.exit());
+        let mut buf = String::new();
+        std::io::stdin()
+            .read_line(&mut buf)
+            .map_err(clap::Error::from)
+            .unwrap_or_else(|e| e.exit());
+        buf
+    };
     let version = match version {
         Some(version) => version.0,
-        None if ignored => {
-            print!("version [default: 5.1]: ");
-            std::io::Write::flush(&mut std::io::stdout())
-                .map_err(clap::Error::from)
-                .unwrap_or_else(|e| e.exit());
-            let mut buf = String::new();
-            std::io::stdin()
-                .read_line(&mut buf)
-                .map_err(clap::Error::from)
-                .unwrap_or_else(|e| e.exit());
-            cli::VersionParser::parse(&buf)
-                .map(|v| v.0)
-                .unwrap_or(unreal_asset::engine_version::EngineVersion::VER_UE5_1)
-        }
+        None if ignored => cli::VersionParser::parse(&get("version [default: 5.1]: "))
+            .map(|v| v.0)
+            .unwrap_or(unreal_asset::engine_version::EngineVersion::VER_UE5_1),
         None => unreal_asset::engine_version::EngineVersion::VER_UE5_1,
     };
     let blueprint = io::open(&orig_path, version).unwrap_or_else(|e| {
         eprintln!("{e}");
         std::process::exit(0);
     });
-    (orig_path, output, blueprint)
+    let hook_folder = get("folder where the hooks are e.g /Game/BP_PlayerGoatMain: ");
+    let hook_path = get("location of the hook interface e.g /Game/BP_PlayerGoatMain_hooks: ");
+    (orig_path, output, blueprint, hook_folder, hook_path)
 }

@@ -11,26 +11,20 @@ fn main() {
     let mut name_map = blueprint.get_name_map().clone_resource();
     // duplicate functions
     let insert = blueprint.asset_data.exports.len();
-    let mut functions: Vec<_> = blueprint
+    let functions: Vec<_> = blueprint
         .asset_data
         .exports
         .iter()
-        .filter(|ex| {
-            matches!(ex, Export::FunctionExport(_))
-                && !ex
-                    .get_base_export()
-                    .object_name
-                    .get_content(|name| name.starts_with("ExecuteUbergraph"))
-        })
-        .cloned()
-        .map(|mut ex| {
-            // duplication is super simple for functions since they have no export refs
-            let name = &mut ex.get_base_export_mut().object_name;
-            // need to improve name api to not clone as often
-            *name = name_map
-                .get_mut()
-                .add_fname(&name.get_content(|name| format!("orig_{name}")));
-            ex
+        .enumerate()
+        .filter_map(|(i, ex)| {
+            match !ex
+                .get_base_export()
+                .object_name
+                .get_content(|name| name.starts_with("ExecuteUbergraph"))
+            {
+                true => unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex.clone())),
+                false => None,
+            }
         })
         .collect();
     let Some(class) = blueprint
@@ -42,32 +36,29 @@ fn main() {
         eprintln!("class export couldn't be found");
         std::process::exit(0)
     };
-    for (i, export) in functions.iter().enumerate() {
+    // two loops so class gets dropped
+    for (i, (_, function)) in functions.iter().enumerate() {
+        // replace old functions
         class.func_map.insert(
-            export.get_base_export().object_name.clone(),
+            function.get_base_export().object_name.clone(),
             unreal_asset::types::PackageIndex::new((insert + i) as i32 + 1),
         );
     }
-    blueprint.asset_data.exports.append(&mut functions);
-    // i could split like before but there's really no point
-    // let bytecode = kismet::init(&mut name_map, &mut blueprint);
-    /*
-    let Some(beginplay) = class
-        .func_map
-        .iter()
-        .find_map(|(_, key, val)| (key == "ReceiveBeginPlay").then_some(*val))
-    else {
-        eprintln!("adding ReceiveBeginPlay currently isn't supported");
-        std::process::exit(0)
-    };
-    let Export::FunctionExport(beginplay) =
-        &mut blueprint.asset_data.exports[beginplay.index as usize - 1]
-    else {
-        eprintln!("ReceiveBeginPlay couldn't be retrieved");
-        std::process::exit(0)
-    };
-    beginplay.struct_export.script_bytecode = Some(bytecode);
-    */
+    for (old, mut function) in functions {
+        // duplication is super simple for functions since they have no export refs
+        let name = &mut blueprint.asset_data.exports[old]
+            .get_base_export_mut()
+            .object_name;
+        // need to improve name api to not clone as often
+        *name = name_map
+            .get_mut()
+            .add_fname(&name.get_content(|name| format!("orig_{name}")));
+        kismet::hook(&mut function, &mut name_map, &mut blueprint);
+        blueprint
+            .asset_data
+            .exports
+            .push(Export::FunctionExport(function));
+    }
     io::save(&mut blueprint, output.unwrap_or(orig_path)).unwrap_or_else(|e| {
         eprintln!("{e}");
         std::process::exit(0);

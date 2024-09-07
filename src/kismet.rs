@@ -27,7 +27,8 @@ fn get_or_insert(import: Import, imports: &mut Vec<Import>) -> Index {
 }
 
 // need to add local variables to the loaded properties
-pub fn init(
+pub fn hook(
+    function: &mut unreal_asset::exports::FunctionExport<Index>,
     name_map: &mut unreal_asset::containers::SharedResource<unreal_asset::containers::NameMap>,
     blueprint: &mut unreal_asset::Asset<std::io::BufReader<std::fs::File>>,
 ) -> Vec<K> {

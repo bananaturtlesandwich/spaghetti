@@ -22,11 +22,9 @@ fn main() {
         .iter()
         .enumerate()
         .filter_map(|(i, ex)| {
-            match !ex
-                .get_base_export()
-                .object_name
-                .get_content(|name| name.starts_with("ExecuteUbergraph"))
-            {
+            match !ex.get_base_export().object_name.get_content(|name| {
+                name.starts_with("ExecuteUbergraph") || name == "UserConstructionScript"
+            }) {
                 true => unreal_asset::cast!(Export, FunctionExport, ex).map(|ex| (i, ex.clone())),
                 false => None,
             }
@@ -69,15 +67,15 @@ fn main() {
         *name = name_map
             .get_mut()
             .add_fname(&name.get_content(|name| format!("orig_{name}")));
-        kismet::hook(
-            &mut function,
-            Index::new((insert + new) as i32 + 1),
-            &mut name_map,
-            &mut blueprint,
-            &hook_folder,
-            &hook_path,
-            &hook_name,
-        );
+        // kismet::hook(
+        //     &mut function,
+        //     Index::new((insert + new) as i32 + 1),
+        //     &mut name_map,
+        //     &mut blueprint,
+        //     &hook_folder,
+        //     &hook_path,
+        //     &hook_name,
+        // );
         blueprint
             .asset_data
             .exports

@@ -23,6 +23,7 @@ pub fn hook(
 ) {
     let function_name = function.get_base_export().object_name.get_owned_content();
     let init = function.get_base_export().object_name == "ReceiveBeginPlay";
+    let init = false;
     // clear out previous locals
     function.struct_export.loaded_properties.clear();
     macro_rules! import {

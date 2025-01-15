@@ -174,6 +174,13 @@ fn main() {
     for (i, _) in funcs.into_iter().chain(hooks.into_iter()) {
         transplant::transplant(i, &mut orig, &hook)
     }
+    let outer = split as i32 + 1;
+    for i in insert - 1..orig.asset_data.exports.len() {
+        orig.asset_data.exports[i]
+            .get_base_export_mut()
+            .outer_index
+            .index = outer;
+    }
     io::save(&mut orig, output.unwrap_or(orig_path)).unwrap_or_else(|e| {
         eprintln!("{e}");
         std::process::exit(0);

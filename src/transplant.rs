@@ -35,21 +35,8 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
                     &import.class_name,
                     &import.object_name,
                 ) {
-                    // sometimes e.g for GEN_VARIABLEs you want those imports
-                    Some(existing)
-                        if donor.get_import(import.outer_index).is_some_and(|imp| {
-                            recipient
-                                .get_import(PackageIndex::new(existing))
-                                .is_some_and(|import| {
-                                    imp.class_package.eq_content(&import.class_package)
-                                        && imp.class_name.eq_content(&import.class_name)
-                                        && imp.object_name.eq_content(&import.object_name)
-                                })
-                        }) =>
-                    {
-                        existing
-                    }
-                    _ => {
+                    Some(existing) => existing,
+                    None => {
                         -import_offset
                             - match imports.iter().position(|imp: &Import| {
                                 imp.class_package.eq_content(&import.class_package)
@@ -81,20 +68,8 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
                 &parent.class_name,
                 &parent.object_name,
             ) {
-                Some(existing)
-                    if donor.get_import(parent.outer_index).is_some_and(|imp| {
-                        recipient
-                            .get_import(PackageIndex::new(existing))
-                            .is_some_and(|import| {
-                                imp.class_package.eq_content(&import.class_package)
-                                    && imp.class_name.eq_content(&import.class_name)
-                                    && imp.object_name.eq_content(&import.object_name)
-                            })
-                    }) =>
-                {
-                    existing
-                }
-                _ => {
+                Some(existing) => existing,
+                None => {
                     -import_offset
                         - match imports.iter().position(|import: &Import| {
                             import.class_package.eq_content(&parent.class_package)

@@ -1,9 +1,4 @@
-use unreal_asset::{
-    exports::*,
-    properties::Property,
-    types::{PackageIndex, PackageIndexTrait},
-    Asset, Import,
-};
+use unreal_asset::{exports::*, properties::Property, types::PackageIndex, Asset, Import};
 
 mod fprop;
 mod kismet;
@@ -15,48 +10,42 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     donor: &Asset<D>,
     class: i32,
 ) {
-    let mut children = get_actor_exports(index, donor, recipient.asset_data.exports.len(), class);
-    for child in children
-        .iter_mut()
-        .map(ExportBaseTrait::get_base_export_mut)
-    {
-        child.object_name = child
-            .object_name
-            .get_content(|name| recipient.add_fname(name.trim_start_matches("hook_")))
-    }
+    let mut child = get_export(index, donor, recipient.asset_data.exports.len(), class);
+    let base = child.get_base_export_mut();
+    base.object_name = base
+        .object_name
+        .get_content(|name| recipient.add_fname(name.trim_start_matches("hook_")));
     // resolve all import references from exports
     let import_offset = recipient.imports.len() as i32;
     let mut imports = Vec::new();
-    for child in &mut children {
-        on_import_refs(child, |index| {
-            if let Some(import) = donor.get_import(*index) {
-                index.index = match recipient.find_import_no_index(
-                    &import.class_package,
-                    &import.class_name,
-                    &import.object_name,
-                ) {
-                    Some(existing) => existing,
-                    None => {
-                        -import_offset
-                            - match imports.iter().position(|imp: &Import| {
-                                imp.class_package.eq_content(&import.class_package)
-                                    && imp.class_name.eq_content(&import.class_name)
-                                    && imp.object_name.eq_content(&import.object_name)
-                            }) {
-                                Some(existing) => existing + 1,
-                                None => {
-                                    imports.push(import.clone());
-                                    // this actually pads perfectly so no need for + 1
-                                    imports.len()
-                                }
-                            } as i32
-                    }
+    on_import_refs(&mut child, |index| {
+        if let Some(import) = donor.get_import(*index) {
+            index.index = match recipient.find_import_no_index(
+                &import.class_package,
+                &import.class_name,
+                &import.object_name,
+            ) {
+                Some(existing) => existing,
+                None => {
+                    -import_offset
+                        - match imports.iter().position(|imp: &Import| {
+                            imp.class_package.eq_content(&import.class_package)
+                                && imp.class_name.eq_content(&import.class_name)
+                                && imp.object_name.eq_content(&import.object_name)
+                        }) {
+                            Some(existing) => existing + 1,
+                            None => {
+                                imports.push(import.clone());
+                                // this actually pads perfectly so no need for + 1
+                                imports.len()
+                            }
+                        } as i32
                 }
             }
-        })
-    }
+        }
+    });
     // finally add the exports
-    recipient.asset_data.exports.append(&mut children);
+    recipient.asset_data.exports.push(child);
 
     // resolve all import references from imports
     let mut i = 0;
@@ -91,62 +80,35 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     recipient.imports.append(&mut imports);
 }
 
-/// gets all exports related to the given actor
-fn get_actor_exports<C: std::io::Seek + std::io::Read>(
+/// gets export redirected to the recipient
+fn get_export<C: std::io::Seek + std::io::Read>(
     index: usize,
     asset: &Asset<C>,
     offset: usize,
     class: i32,
-) -> Vec<Export<PackageIndex>> {
-    // get references to all the actor's children
-    let mut child_indexes: Vec<PackageIndex> = asset.asset_data.exports[index]
-        .get_base_export()
-        .create_before_serialization_dependencies
-        .iter()
-        .filter(|dep| dep.is_export())
-        // dw PackageIndex is just a wrapper around i32 which is cloned by default anyway
-        .cloned()
-        .collect();
-    // add the top-level actor reference
-    if !child_indexes
-        .iter()
-        .any(|i| (i.index - 1) as usize == index)
-    {
-        child_indexes.insert(0, PackageIndex::new(index as i32 + 1))
-    }
-
-    // get all the exports from those indexes
-    let mut children: Vec<_> = child_indexes
-        .iter()
-        .filter_map(|index| asset.get_export(*index))
-        // i'm pretty sure i have to clone here so i can modify then insert data
-        .cloned()
-        .collect();
+) -> Export<PackageIndex> {
+    let mut child = asset.asset_data.exports[index].clone();
 
     let package_offset = (offset + 1) as i32;
     // update export references to what they will be once added
-    for (i, child_index) in child_indexes.into_iter().enumerate() {
-        for child in children.iter_mut() {
-            let old = child.get_base_export_mut().outer_index.index;
-            on_export_refs(child, |index| {
-                if index == &child_index {
-                    index.index = package_offset + i as i32;
-                } else if index.index == old {
-                    index.index = class;
-                }
-            });
-            let base = child.get_base_export_mut();
-            if let Some(i) = base
-                .create_before_create_dependencies
-                .iter_mut()
-                .find(|i| i.index == old)
-            {
-                i.index = class;
-            }
-            base.outer_index.index = class;
+    let old = child.get_base_export_mut().outer_index.index;
+    on_export_refs(&mut child, |i| {
+        if i.index == index as i32 + 1 {
+            i.index = package_offset as i32;
+        } else if i.index == old {
+            i.index = class;
         }
+    });
+    let base = child.get_base_export_mut();
+    if let Some(i) = base
+        .create_before_create_dependencies
+        .iter_mut()
+        .find(|i| i.index == old)
+    {
+        i.index = class;
     }
-    children
+    base.outer_index.index = class;
+    child
 }
 
 fn on_norm(norm: &mut NormalExport<PackageIndex>, func: &mut impl FnMut(&mut PackageIndex)) {

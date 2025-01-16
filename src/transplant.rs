@@ -13,8 +13,9 @@ pub fn transplant<C: std::io::Seek + std::io::Read, D: std::io::Seek + std::io::
     index: usize,
     recipient: &mut Asset<C>,
     donor: &Asset<D>,
+    class: i32,
 ) {
-    let mut children = get_actor_exports(index, donor, recipient.asset_data.exports.len());
+    let mut children = get_actor_exports(index, donor, recipient.asset_data.exports.len(), class);
     for child in children
         .iter_mut()
         .map(ExportBaseTrait::get_base_export_mut)
@@ -120,6 +121,7 @@ fn get_actor_exports<C: std::io::Seek + std::io::Read>(
     index: usize,
     asset: &Asset<C>,
     offset: usize,
+    class: i32,
 ) -> Vec<Export<PackageIndex>> {
     // get references to all the actor's children
     let mut child_indexes: Vec<PackageIndex> = asset.asset_data.exports[index]
@@ -150,11 +152,23 @@ fn get_actor_exports<C: std::io::Seek + std::io::Read>(
     // update export references to what they will be once added
     for (i, child_index) in child_indexes.into_iter().enumerate() {
         for child in children.iter_mut() {
+            let old = child.get_base_export_mut().outer_index.index;
             on_export_refs(child, |index| {
                 if index == &child_index {
                     index.index = package_offset + i as i32;
+                } else if index.index == old {
+                    index.index = class;
                 }
             });
+            let base = child.get_base_export_mut();
+            if let Some(i) = base
+                .create_before_create_dependencies
+                .iter_mut()
+                .find(|i| i.index == old)
+            {
+                i.index = class;
+            }
+            base.outer_index.index = class;
         }
     }
     children

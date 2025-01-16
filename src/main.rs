@@ -172,20 +172,7 @@ fn main() {
         );
     }
     for (i, _) in funcs.into_iter().chain(hooks.into_iter()) {
-        transplant::transplant(i, &mut orig, &hook)
-    }
-    let class = split as i32 + 1;
-    for i in insert - 1..orig.asset_data.exports.len() {
-        let base = orig.asset_data.exports[i].get_base_export_mut();
-        let old = base.outer_index.index;
-        base.outer_index.index = class;
-        if let Some(i) = base
-            .create_before_create_dependencies
-            .iter_mut()
-            .find(|i| i.index == old)
-        {
-            i.index = class;
-        }
+        transplant::transplant(i, &mut orig, &hook, split as i32 + 1)
     }
     io::save(&mut orig, output.unwrap_or(orig_path)).unwrap_or_else(|e| {
         eprintln!("{e}");
